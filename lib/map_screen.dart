@@ -65,7 +65,7 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   void _gotoLocation(double lat, double long) {
-    mapController.move(LatLng(lat, long), mapController.zoom);
+    mapController.move(LatLng(lat, long),  17.0);
   }
 
   @override
@@ -79,10 +79,8 @@ class _MapScreenState extends State<MapScreen> {
                 setState(() {
                   point = LatLng(
                       currentLocation.latitude, currentLocation.longitude);
-                  // Provider.of<LocData>(context, listen: false).changePos(point);
                   _gotoLocation(
                       currentLocation.latitude, currentLocation.longitude);
-                  // print(point);
                 });
               },
               icon: Icon(Icons.refresh))
@@ -111,12 +109,13 @@ class _MapScreenState extends State<MapScreen> {
                             // Provider.of<LocData>(context, listen: false).changePosWidget(point),
                             Text(
                               "LAT :" + point.latitude.toString(),
-                              style:
-                              TextStyle(color: Colors.pinkAccent, fontSize: 25),
+                              style: TextStyle(
+                                  color: Colors.pinkAccent, fontSize: 25),
                             ),
                             Text(
                               "LNG :" + point.longitude.toString(),
-                              style: TextStyle(color: Colors.purple, fontSize: 25),
+                              style:
+                                  TextStyle(color: Colors.purple, fontSize: 25),
                             ),
                           ],
                         ),
@@ -129,13 +128,13 @@ class _MapScreenState extends State<MapScreen> {
                             zoom: 18.0,
                             minZoom: 11.0,
                             maxZoom: 17.0,
-                            interactiveFlags:
-                            InteractiveFlag.pinchZoom | InteractiveFlag.drag,
+                            interactiveFlags: InteractiveFlag.pinchZoom |
+                                InteractiveFlag.drag,
                           ),
                           layers: [
                             TileLayerOptions(
                                 urlTemplate:
-                                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                                    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                                 subdomains: ['a', 'b', 'c']),
                             MarkerLayerOptions(markers: [
                               Marker(
@@ -143,10 +142,10 @@ class _MapScreenState extends State<MapScreen> {
                                   height: 100.0,
                                   point: point,
                                   builder: (context) => const Icon(
-                                    Icons.location_on,
-                                    color: Colors.red,
-                                    size: 50,
-                                  ))
+                                        Icons.location_on,
+                                        color: Colors.red,
+                                        size: 50,
+                                      ))
                             ])
                           ],
                         ),

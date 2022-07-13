@@ -55,6 +55,8 @@ dependencies:
   collection: ^1.14.0
   #  location: ^4.4.0
   geolocator: ^8.0.1
+  smooth_page_indicator: ^1.0.0+2
+  shared_preferences: ^2.0.15
 
 dev_dependencies:
   flutter_test:
@@ -110,3 +112,5 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+  assets:
+    - assets/images/
