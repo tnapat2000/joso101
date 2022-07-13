@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+// import 'package:joso101/LocData.dart';
 import 'package:latlong/latlong.dart';
-// import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
-// import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+// import 'package:provider/provider.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({Key? key}) : super(key: key);
@@ -11,92 +13,150 @@ class MapScreen extends StatefulWidget {
   State<MapScreen> createState() => _MapScreenState();
 }
 
-class _MapScreenState extends State<MapScreen>{
+class _MapScreenState extends State<MapScreen> {
+  String location = 'Null, Press Button';
+  String Address = 'search';
+  late Position currentLocation;
+  LatLng point = LatLng(37.421871, -122.084122);
+  late final MapController mapController;
 
-  LatLng point = LatLng(49.5, -0.09);
-  // LocationData? current;
+  @override
+  void initState() {
+    super.initState();
+    mapController = MapController();
+  }
+
+  Stream<Position> getCurrentLocation() {
+    return Geolocator.getPositionStream();
+  }
+
+  Future<Position> _getGeoLocationPosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      await Geolocator.openLocationSettings();
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    return await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+  }
+
+  void _gotoLocation(double lat, double long) {
+    mapController.move(LatLng(lat, long), mapController.zoom);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return  Stack(
-      children: [
-        FlutterMap(
-          options: MapOptions(
-            center: LatLng(49.5, -0.09),
-            zoom: 10.0,
-          ),
-          layers: [
-            TileLayerOptions(
-              urlTemplate: "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-              subdomains: ['a','b','c']
-            ),
-            MarkerLayerOptions(markers: [
-              Marker(
-                width: 100.0,
-                height: 100.0,
-                point:
-                  point,
-                builder: (context) => Icon(
-                  Icons.location_on,
-                  color: Colors.red,
-                )
-              )
-            ])
+    return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(
+              onPressed: () async {
+                currentLocation = await _getGeoLocationPosition();
+                setState(() {
+                  point = LatLng(
+                      currentLocation.latitude, currentLocation.longitude);
+                  // Provider.of<LocData>(context, listen: false).changePos(point);
+                  _gotoLocation(
+                      currentLocation.latitude, currentLocation.longitude);
+                  // print(point);
+                });
+              },
+              icon: Icon(Icons.refresh))
+        ],
+        title: Text("TITLE"),
+      ),
+      body: SafeArea(
+        child: Stack(
+          children: [
+            StreamBuilder<Position>(
+                stream: getCurrentLocation(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  point =
+                      LatLng(snapshot.data?.latitude, snapshot.data?.longitude);
+                  // Provider.of<LocData>(context, listen: false).changePos(point);
+                  return Column(
+                    children: [
+                      Center(
+                        child: Column(
+                          children: [
+                            // Provider.of<LocData>(context, listen: false).changePosWidget(point),
+                            Text(
+                              "LAT :" + point.latitude.toString(),
+                              style:
+                              TextStyle(color: Colors.pinkAccent, fontSize: 25),
+                            ),
+                            Text(
+                              "LNG :" + point.longitude.toString(),
+                              style: TextStyle(color: Colors.purple, fontSize: 25),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: FlutterMap(
+                          mapController: mapController,
+                          options: MapOptions(
+                            center: point,
+                            zoom: 18.0,
+                            minZoom: 11.0,
+                            maxZoom: 17.0,
+                            interactiveFlags:
+                            InteractiveFlag.pinchZoom | InteractiveFlag.drag,
+                          ),
+                          layers: [
+                            TileLayerOptions(
+                                urlTemplate:
+                                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                                subdomains: ['a', 'b', 'c']),
+                            MarkerLayerOptions(markers: [
+                              Marker(
+                                  width: 100.0,
+                                  height: 100.0,
+                                  point: point,
+                                  builder: (context) => const Icon(
+                                    Icons.location_on,
+                                    color: Colors.red,
+                                    size: 50,
+                                  ))
+                            ])
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+                })
           ],
-        )
-      ],
+        ),
+      ),
     );
   }
-
-  // MapController mapController = MapController(
-  //   initMapWithUserPosition: false,
-  //   initPosition: GeoPoint(latitude: 47.4358055, longitude: 8.4737324),
-  // );
-  //
-  // @override
-  // Widget build(BuildContext context) {
-  //   return OSMFlutter(
-  //     controller:mapController,
-  //     trackMyPosition: false,
-  //     initZoom: 12,
-  //     minZoomLevel: 8,
-  //     maxZoomLevel: 14,
-  //     stepZoom: 1.0,
-  //     userLocationMarker: UserLocationMaker(
-  //       personMarker: MarkerIcon(
-  //         icon: Icon(
-  //           Icons.location_history_rounded,
-  //           color: Colors.red,
-  //           size: 48,
-  //         ),
-  //       ),
-  //       directionArrowMarker: MarkerIcon(
-  //         icon: Icon(
-  //           Icons.double_arrow,
-  //           size: 48,
-  //         ),
-  //       ),
-  //     ),
-  //     roadConfiguration: RoadConfiguration(
-  //       startIcon: MarkerIcon(
-  //         icon: Icon(
-  //           Icons.person,
-  //           size: 64,
-  //           color: Colors.brown,
-  //         ),
-  //       ),
-  //       roadColor: Colors.yellowAccent,
-  //     ),
-  //     markerOption: MarkerOption(
-  //         defaultMarker: MarkerIcon(
-  //           icon: Icon(
-  //             Icons.person_pin_circle,
-  //             color: Colors.blue,
-  //             size: 56,
-  //           ),
-  //         )
-  //     ),
-  //   );
-  // }
 }
-

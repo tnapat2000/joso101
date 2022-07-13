@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:joso101/LocData.dart';
 import 'package:joso101/map_screen.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,7 +27,8 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const MapScreen(),
+      home: ChangeNotifierProvider(
+          create: (context) => LocData(), child: MapScreen()),
     );
   }
 }
