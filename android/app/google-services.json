@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "175220370337",
+    "project_id": "joso101",
+    "storage_bucket": "joso101.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:175220370337:android:517cb2c833d7fe048d79e0",
+        "android_client_info": {
+          "package_name": "com.napattan.joso101"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "175220370337-1d4urtkpf550frsks3h94an2l5jfuag1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6NOPej1HuQKMf1NVR9GZpo6FDHX31sIA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "175220370337-1d4urtkpf550frsks3h94an2l5jfuag1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
