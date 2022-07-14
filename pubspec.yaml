@@ -57,6 +57,9 @@ dependencies:
   geolocator: ^8.0.1
   smooth_page_indicator: ^1.0.0+2
   shared_preferences: ^2.0.15
+  firebase_core: ^1.19.2
+  firebase_auth: ^3.4.2
+  cloud_firestore: ^3.3.0
 
 dev_dependencies:
   flutter_test:

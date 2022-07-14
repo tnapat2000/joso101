@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:joso101/LocData.dart';
 import 'package:joso101/map_screen.dart';
 import 'package:joso101/pageone.dart';
 import 'package:joso101/pagethree.dart';
