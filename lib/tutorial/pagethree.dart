@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../colors.dart';
+import '../utils/colors.dart';
 
 class PageThree extends StatelessWidget {
   const PageThree({Key? key}) : super(key: key);

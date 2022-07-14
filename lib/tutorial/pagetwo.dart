@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:joso101/colors.dart';
+import 'package:joso101/utils/colors.dart';
 
 class PageTwo extends StatelessWidget {
   const PageTwo({Key? key}) : super(key: key);
