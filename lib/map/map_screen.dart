@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 // import 'package:joso101/LocData.dart';
 import 'package:latlong/latlong.dart';
 import 'package:geocoding/geocoding.dart';
@@ -30,6 +31,7 @@ class _MapScreenState extends State<MapScreen> {
   void initState() {
     super.initState();
     mapController = MapController();
+    currentUser = "tester1@gmail.com";
     initFirebase();
   }
 
@@ -38,7 +40,8 @@ class _MapScreenState extends State<MapScreen> {
     _auth = FirebaseAuth.instance;
     _fstore = FirebaseFirestore.instance;
     //  for testing
-    await _auth.signInWithEmailAndPassword(email: "tester1@gmail.com", password: "peepoo");
+    await _auth.signInWithEmailAndPassword(
+        email: "tester1@gmail.com", password: "peepoo");
     currentUser = _auth.currentUser?.email ?? "none";
     print(currentUser);
   }
@@ -77,6 +80,38 @@ class _MapScreenState extends State<MapScreen> {
   void _gotoLocation(double lat, double long) {
     mapController.move(LatLng(lat, long), 17.0);
   }
+
+  List<Marker> testMarkers = [
+    Marker(
+        width: 50,
+        height: 50,
+        point: LatLng(37.421, -122.089),
+        builder: (context) => const Icon(
+              Icons.location_on,
+              color: Colors.blue,
+              size: 50,
+            )),
+    Marker(
+        width: 50,
+        height: 50,
+        point: LatLng(37.422, -122.083),
+        builder: (context) => const Icon(
+          Icons.location_on,
+          color: Colors.blue,
+          size: 50,
+        )
+    ),
+    Marker(
+        width: 50,
+        height: 50,
+        point: LatLng(37.423, -122.084),
+        builder: (context) => const Icon(
+          Icons.location_on,
+          color: Colors.blue,
+          size: 50,
+        )
+    )
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -134,29 +169,31 @@ class _MapScreenState extends State<MapScreen> {
                         child: FlutterMap(
                           mapController: mapController,
                           options: MapOptions(
-                            center: currentPoint,
-                            zoom: 18.0,
-                            minZoom: 11.0,
-                            maxZoom: 17.0,
-                            interactiveFlags: InteractiveFlag.pinchZoom |
-                                InteractiveFlag.drag,
-                          ),
+                              center: currentPoint,
+                              zoom: 18.0,
+                              minZoom: 11.0,
+                              maxZoom: 17.0,
+                              interactiveFlags: InteractiveFlag.pinchZoom |
+                                  InteractiveFlag.drag,
+                              plugins: [
+                                MarkerClusterPlugin(),
+                              ]),
                           layers: [
                             TileLayerOptions(
                                 urlTemplate:
                                     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                                 subdomains: ['a', 'b', 'c']),
-                            MarkerLayerOptions(markers: [
+                            MarkerLayerOptions(markers: testMarkers + [
                               Marker(
                                   width: 100.0,
                                   height: 100.0,
                                   point: currentPoint,
                                   builder: (context) => const Icon(
                                         Icons.location_on,
-                                        color: Colors.red,
+                                        color: Colors.redAccent,
                                         size: 50,
                                       ))
-                            ])
+                            ]),
                           ],
                         ),
                       ),
