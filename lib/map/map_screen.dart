@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 // import 'package:joso101/LocData.dart';
@@ -14,16 +17,30 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
+  late FirebaseAuth _auth;
+  late FirebaseFirestore _fstore;
   String location = 'Null, Press Button';
-  String Address = 'search';
+  String address = 'search';
+  late String currentUser;
   late Position currentLocation;
-  LatLng point = LatLng(37.421871, -122.084122);
+  LatLng currentPoint = LatLng(37.421871, -122.084122);
   late final MapController mapController;
 
   @override
   void initState() {
     super.initState();
     mapController = MapController();
+    initFirebase();
+  }
+
+  void initFirebase() async {
+    await Firebase.initializeApp();
+    _auth = FirebaseAuth.instance;
+    _fstore = FirebaseFirestore.instance;
+    //  for testing
+    await _auth.signInWithEmailAndPassword(email: "tester1@gmail.com", password: "peepoo");
+    currentUser = _auth.currentUser?.email ?? "none";
+    print(currentUser);
   }
 
   Stream<Position> getCurrentLocation() {
@@ -37,9 +54,6 @@ class _MapScreenState extends State<MapScreen> {
     // Test if location services are enabled.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      // Location services are not enabled don't continue
-      // accessing the position and request users of the
-      // App to enable the location services.
       await Geolocator.openLocationSettings();
       return Future.error('Location services are disabled.');
     }
@@ -53,19 +67,15 @@ class _MapScreenState extends State<MapScreen> {
     }
 
     if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
     }
-
-    // When we reach here, permissions are granted and we can
-    // continue accessing the position of the device.
     return await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
   }
 
   void _gotoLocation(double lat, double long) {
-    mapController.move(LatLng(lat, long),  17.0);
+    mapController.move(LatLng(lat, long), 17.0);
   }
 
   @override
@@ -77,7 +87,7 @@ class _MapScreenState extends State<MapScreen> {
               onPressed: () async {
                 currentLocation = await _getGeoLocationPosition();
                 setState(() {
-                  point = LatLng(
+                  currentPoint = LatLng(
                       currentLocation.latitude, currentLocation.longitude);
                   _gotoLocation(
                       currentLocation.latitude, currentLocation.longitude);
@@ -98,7 +108,7 @@ class _MapScreenState extends State<MapScreen> {
                       child: CircularProgressIndicator(),
                     );
                   }
-                  point =
+                  currentPoint =
                       LatLng(snapshot.data?.latitude, snapshot.data?.longitude);
                   // Provider.of<LocData>(context, listen: false).changePos(point);
                   return Column(
@@ -108,12 +118,12 @@ class _MapScreenState extends State<MapScreen> {
                           children: [
                             // Provider.of<LocData>(context, listen: false).changePosWidget(point),
                             Text(
-                              "LAT :" + point.latitude.toString(),
+                              "LAT :" + currentPoint.latitude.toString(),
                               style: TextStyle(
                                   color: Colors.pinkAccent, fontSize: 25),
                             ),
                             Text(
-                              "LNG :" + point.longitude.toString(),
+                              "LNG :" + currentPoint.longitude.toString(),
                               style:
                                   TextStyle(color: Colors.purple, fontSize: 25),
                             ),
@@ -124,7 +134,7 @@ class _MapScreenState extends State<MapScreen> {
                         child: FlutterMap(
                           mapController: mapController,
                           options: MapOptions(
-                            center: point,
+                            center: currentPoint,
                             zoom: 18.0,
                             minZoom: 11.0,
                             maxZoom: 17.0,
@@ -140,7 +150,7 @@ class _MapScreenState extends State<MapScreen> {
                               Marker(
                                   width: 100.0,
                                   height: 100.0,
-                                  point: point,
+                                  point: currentPoint,
                                   builder: (context) => const Icon(
                                         Icons.location_on,
                                         color: Colors.red,

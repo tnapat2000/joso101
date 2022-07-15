@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:joso101/authen/login_screen.dart';
+import 'package:joso101/tutorial/myhomepage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'map/map_screen.dart';
 // import 'shared';
 
 Future<void> main() async {
@@ -32,10 +35,11 @@ class MyApp extends StatelessWidget {
       ),
       home:
       // RegisterScreen()
-      LoginScreen()
+      // LoginScreen()
       // showMap
       //     ? const MapScreen()
       //     : const MyHomePage(title: 'Flutter Demo Home Page'),
+      MapScreen()
     );
   }
 }
