@@ -3,8 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
+import 'package:joso101/utils/basecard.dart';
 import 'package:latlong/latlong.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
+
+import 'MapData.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({Key? key}) : super(key: key);
@@ -16,19 +20,20 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   late FirebaseAuth _auth;
   late FirebaseFirestore _fstore;
-  String location = 'Null, Press Button';
-  String address = 'search';
   late String currentUser;
   late Position currentLocation;
   LatLng currentPoint = LatLng(37.421871, -122.084122);
   late final MapController mapController;
   late List<Marker> accidents;
+  // Color statusColor = Colors.greenAccent;
+  bool activeStatus = false;
+  double defaultPrecision = 0.0001;
 
   @override
   void initState() {
     super.initState();
     mapController = MapController();
-    currentUser = "tester1@gmail.com";
+    // currentUser = "tester1@gmail.com";
     initFirebase();
   }
 
@@ -36,11 +41,11 @@ class _MapScreenState extends State<MapScreen> {
     _auth = FirebaseAuth.instance;
     _fstore = FirebaseFirestore.instance;
     //  for testing
-    await _auth.signInWithEmailAndPassword(
-        email: "tester1@gmail.com", password: "peepoo");
+    // await _auth.signInWithEmailAndPassword(
+    //     email: "tester1@gmail.com", password: "peepoo");
 
     currentUser = _auth.currentUser?.email ?? "none";
-    print(currentUser);
+    // print(currentUser);
   }
 
   Stream<Position> getCurrentLocation() {
@@ -78,24 +83,35 @@ class _MapScreenState extends State<MapScreen> {
     mapController.move(LatLng(lat, long), 17.0);
   }
 
+  bool isInDangerZone(LatLng dangerPoint, double precision) {
+    double dangerLatUpper = dangerPoint.latitude + precision;
+    double dangerLatLower = dangerPoint.latitude - precision;
+    double dangerLngUpper = dangerPoint.longitude + precision;
+    double dangerLngLower = dangerPoint.longitude - precision;
+
+    return (currentPoint.latitude <= dangerLatUpper) &&
+        (currentPoint.latitude >= dangerLatLower) &&
+        (currentPoint.longitude <= dangerLngUpper) &&
+        (currentPoint.longitude >= dangerLngLower);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Provider.of<MapData>(context).statusColor,
         actions: [
           IconButton(
               onPressed: () async {
                 currentLocation = await _getGeoLocationPosition();
                 setState(() {
-                  currentPoint = LatLng(
-                      currentLocation.latitude, currentLocation.longitude);
-                  _gotoLocation(
-                      currentLocation.latitude, currentLocation.longitude);
+                  print("REPORT");
                 });
               },
-              icon: Icon(Icons.refresh))
+              iconSize: 35,
+              icon: Icon(Icons.sms_failed_outlined))
         ],
-        title: Text("TITLE"),
+        title: Text(currentUser),
       ),
       body: SafeArea(
         child: Stack(
@@ -106,105 +122,158 @@ class _MapScreenState extends State<MapScreen> {
                     AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.hasData) {
                     final snap = snapshot.data!.docs;
-                    return
-                        // ListView.builder(
-                        //   shrinkWrap: true,
-                        //   primary: false,
-                        //   itemCount: snap.length,
-                        //   itemBuilder: (context, index) {
-                        //     return Text(snap[index]['lat'].toString() +
-                        //         ' : ' +
-                        //         snap[index]['lng'].toString());
-                        //   },
-                        // );
-                        StreamBuilder<Position>(
-                            stream: getCurrentLocation(),
-                            builder: (context, snapshot) {
-                              if (!snapshot.hasData) {
-                                return const Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              }
-                              currentPoint = LatLng(snapshot.data?.latitude,
-                                  snapshot.data?.longitude);
-                              // Provider.of<LocData>(context, listen: false).changePos(point);
-                              return Column(
-                                children: [
-                                  // Center(
-                                  //   child: Column(
-                                  //     children: [
-                                  //       // Provider.of<LocData>(context, listen: false).changePosWidget(point),
-                                  //       Text(
-                                  //         "LAT :" +
-                                  //             currentPoint.latitude.toString(),
-                                  //         style: TextStyle(
-                                  //             color: Colors.pinkAccent,
-                                  //             fontSize: 25),
-                                  //       ),
-                                  //       Text(
-                                  //         "LNG :" +
-                                  //             currentPoint.longitude.toString(),
-                                  //         style: TextStyle(
-                                  //             color: Colors.purple,
-                                  //             fontSize: 25),
-                                  //       ),
-                                  //     ],
-                                  //   ),
-                                  // ),
-                                  Expanded(
-                                    child: FlutterMap(
-                                      mapController: mapController,
-                                      options: MapOptions(
-                                          center: currentPoint,
-                                          zoom: 18.0,
-                                          minZoom: 11.0,
-                                          maxZoom: 17.0,
-                                          interactiveFlags:
-                                              InteractiveFlag.pinchZoom |
-                                                  InteractiveFlag.drag,
-                                          plugins: [
-                                            MarkerClusterPlugin(),
-                                          ]),
-                                      layers: [
-                                        TileLayerOptions(
-                                            urlTemplate:
-                                                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                                            subdomains: ['a', 'b', 'c']),
-                                        MarkerLayerOptions(
-                                            markers: List.generate(
-                                                    snap.length,
-                                                    (index) => Marker(
-                                                        width: 50,
-                                                        height: 50,
-                                                        point: LatLng(
-                                                            snap[index]['lat'],
-                                                            snap[index]['lng']),
-                                                        builder: (context) =>
-                                                            const Icon(
-                                                              Icons.location_on,
-                                                              color:
-                                                                  Colors.blue,
-                                                              size: 50,
-                                                            ))) +
-                                                [
-                                                  Marker(
-                                                      width: 100.0,
-                                                      height: 100.0,
-                                                      point: currentPoint,
-                                                      builder: (context) =>
-                                                          const Icon(
-                                                            Icons.location_on,
-                                                            color: Colors
-                                                                .redAccent,
-                                                            size: 50,
-                                                          ))
-                                                ]),
-                                      ],
+                    return StreamBuilder<Position>(
+                        stream: getCurrentLocation(),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          currentPoint = LatLng(snapshot.data?.latitude,
+                              snapshot.data?.longitude);
+                          return Column(
+                            children: [
+                              Expanded(
+                                child: FlutterMap(
+                                  mapController: mapController,
+                                  options: MapOptions(
+                                      center: currentPoint,
+                                      zoom: 18.0,
+                                      minZoom: 11.0,
+                                      maxZoom: 17.0,
+                                      interactiveFlags:
+                                          InteractiveFlag.pinchZoom |
+                                              InteractiveFlag.drag,
+                                      plugins: [
+                                        MarkerClusterPlugin(),
+                                      ]),
+                                  layers: [
+                                    TileLayerOptions(
+                                        urlTemplate:
+                                            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                                        subdomains: ['a', 'b', 'c']),
+                                    MarkerLayerOptions(
+                                        markers: List.generate(
+                                                snap.length,
+                                                (index) => Marker(
+                                                    width: 50,
+                                                    height: 50,
+                                                    point: LatLng(
+                                                        snap[index]['lat'],
+                                                        snap[index]['lng']),
+                                                    builder: (context) {
+                                                      // if (isInDangerZone(LatLng(snap[index]['lat'], snap[index]['lng']), defaultPrecision)){
+                                                      //   print("DANGER");
+                                                      // }
+                                                      return const Icon(
+                                                        Icons.location_on,
+                                                        color: Colors.red,
+                                                        size: 50,
+                                                      );
+                                                    })) +
+                                            [
+                                              Marker(
+                                                  width: 100.0,
+                                                  height: 100.0,
+                                                  point: currentPoint,
+                                                  builder: (context) => IconButton(
+                                                      color: Colors.red,
+                                                      onPressed: () {},
+                                                      icon: Image.asset(
+                                                          "assets/images/current_location.png")))
+                                            ]),
+                                  ],
+                                ),
+                              ),
+                              Center(
+                                  child: Container(
+                                color: Colors.purple,
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: BaseCard(
+                                          color: Provider.of<MapData>(context)
+                                              .statusColor,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(2.0),
+                                            child: IconButton(
+                                              icon:
+                                                  Icon(Icons.refresh_outlined),
+                                              onPressed: () async {
+                                                currentLocation =
+                                                    await _getGeoLocationPosition();
+                                                setState(() {
+                                                  currentPoint = LatLng(
+                                                      currentLocation.latitude,
+                                                      currentLocation
+                                                          .longitude);
+                                                });
+                                                print("REFRESH APP");
+                                              },
+                                              iconSize: 40,
+                                            ),
+                                          )),
                                     ),
-                                  ),
-                                ],
-                              );
-                            });
+                                    Expanded(child: SizedBox()),
+                                    Expanded(
+                                      child: BaseCard(
+                                          color: Provider.of<MapData>(context)
+                                              .statusColor,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(2.0),
+                                            child: IconButton(
+                                              icon: Icon(Icons
+                                                  .power_settings_new_rounded),
+                                              onPressed: () {
+                                                if (activeStatus) {
+                                                  Provider.of<MapData>(context,
+                                                          listen: false)
+                                                      .setInactive();
+                                                  print("ACTIVE");
+                                                } else {
+                                                  Provider.of<MapData>(context,
+                                                          listen: false)
+                                                      .setActive();
+                                                  print("INACTIVE");
+                                                }
+                                                setState(() {
+                                                  activeStatus =
+                                                      Provider.of<MapData>(
+                                                              context,
+                                                              listen: false)
+                                                          .activeStatus;
+                                                });
+                                              },
+                                              iconSize: 40,
+                                            ),
+                                          )),
+                                    ),
+                                    Expanded(child: SizedBox()),
+                                    Expanded(
+                                      child: BaseCard(
+                                          color: Provider.of<MapData>(context)
+                                              .statusColor,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(2.0),
+                                            child: IconButton(
+                                              icon: Icon(Icons.my_location),
+                                              onPressed: () {
+                                                print("RECENTER");
+                                                _gotoLocation(
+                                                    currentPoint.latitude,
+                                                    currentPoint.longitude);
+                                              },
+                                              iconSize: 40,
+                                            ),
+                                          )),
+                                    ),
+                                  ],
+                                ),
+                              )),
+                            ],
+                          );
+                        });
                   } else {
                     return StreamBuilder<Position>(
                         stream: getCurrentLocation(),
@@ -221,20 +290,11 @@ class _MapScreenState extends State<MapScreen> {
                             children: [
                               Center(
                                 child: Column(
-                                  children: [
-                                    // Provider.of<LocData>(context, listen: false).changePosWidget(point),
+                                  children: const [
                                     Text(
-                                      "LAT :" +
-                                          currentPoint.latitude.toString(),
+                                      "DB NOT AVAILABLE",
                                       style: TextStyle(
-                                          color: Colors.pinkAccent,
-                                          fontSize: 25),
-                                    ),
-                                    Text(
-                                      "LNG :" +
-                                          currentPoint.longitude.toString(),
-                                      style: TextStyle(
-                                          color: Colors.purple, fontSize: 25),
+                                          color: Colors.red, fontSize: 25),
                                     ),
                                   ],
                                 ),

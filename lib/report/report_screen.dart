@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
+=======
+import 'package:flutter/rendering.dart';
+>>>>>>> temp-branch
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:latlong/latlong.dart';
@@ -188,21 +192,28 @@ class _ReportScreenState extends State<ReportScreen> {
                     ),
                   ),
                 ),
-                // Container(
-                //   child: Center(
-                //     child: new Column(
-                //       TextButton(
-                //         style: TextButton.styleFrom(
-                //           padding: const EdgeInsets.all(16.0),
-                //           primary: Colors.white,
-                //           textStyle: const TextStyle(fontSize: 20),
-                //         ),
-                //         onPressed: () {},
-                //         child: const Text('SUBMIT'),
-                //       ),
-                //     ),
-                //   ),
-                // ),
+
+                Container(
+                  child: Center(
+                    child: new Column(
+                      children:[
+                        OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: light_green,
+                            primary: Colors.black54,
+                            // side: BorderSide(color: Colors.red, width: 5), //<-- SEE HERE
+                          ),
+                          onPressed: () {},
+                          child: const Text(
+                            'SUBMIT',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+
 
 
 
