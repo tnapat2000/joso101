@@ -9,6 +9,7 @@ import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:latlong/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+
 // import 'package:vector_math/vector_math.dart';
 import 'package:joso101/utils/colors.dart';
 
@@ -17,8 +18,6 @@ class ReportScreen extends StatefulWidget {
 
   @override
   State<ReportScreen> createState() => _ReportScreenState();
-
-
 }
 
 class _ReportScreenState extends State<ReportScreen> {
@@ -117,131 +116,100 @@ class _ReportScreenState extends State<ReportScreen> {
         ],
         title: Text("REPORT"),
       ),
-
       body: SlidingUpPanel(
         panel: Center(
           // child: Text("This is the sliding Widget"),
-            child: new Column(
-              children: [
-                  Container(
-                    child: Center(
-                      child: new Column(
-                        children:[
-                          Icon( Icons.arrow_upward_outlined, ),
-                          Text(
-                          'Location:',
-                              style: TextStyle(
-                                  color: Colors.grey[800],
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20),
+          child: Column(
+            children: [
+              Container(
+                child: Center(
+                  child: Column(
+                    children: const [
+                      Text("Location:"),
+                      Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                        child: TextField(
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: 'Enter a location here',
                           ),
-                          const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                            child: TextField(
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Enter a location here',
-                              ),
-                            ),
-                          ),
-                        ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                child: Center(
+                  child: Column(
+                    children: [
+                      Text("Causes:"),
+                      DropdownButton(
+                        // Initial Value
+                        value: dropdownvalue,
+
+                        // Down Arrow Icon
+                        icon: const Icon(Icons.keyboard_arrow_down),
+
+                        // Array list of items
+                        items: items.map((String items) {
+                          return DropdownMenuItem(
+                            value: items,
+                            child: Text(items),
+                          );
+                        }).toList(),
+                        // After selecting the desired option,it will
+                        // change button value to selected value
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            dropdownvalue = newValue!;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Center(
+                child: Column(
+                  children: const [
+                    Text("Details:"),
+                    Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: 'Explain here',
+                        ),
                       ),
                     ),
-                  ),
-                Container(
-                  child: Center(
-                    child: new Column(
-                      children:[
-                        Text(
-                          'Cause:',
-                          style: TextStyle(
-                              color: Colors.grey[800],
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20),
-                        ),
-                        DropdownButton(
-
-                          // Initial Value
-                          value: dropdownvalue,
-
-                          // Down Arrow Icon
-                          icon: const Icon(Icons.keyboard_arrow_down),
-
-                          // Array list of items
-                          items: items.map((String items) {
-                            return DropdownMenuItem(
-                              value: items,
-                              child: Text(items),
-                            );
-                          }).toList(),
-                          // After selecting the desired option,it will
-                          // change button value to selected value
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              dropdownvalue = newValue!;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
+                  ],
                 ),
-                Container(
-                  child: Center(
-                    child: new Column(
-                      children:[
-                        Text(
-                          'Details:',
-                          style: TextStyle(
-                              color: Colors.grey[800],
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                          child: TextField(
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              hintText: 'Explain here',
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+              ),
+              Center(
+                child: Column(
+                  children: [
+                    OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        backgroundColor: light_green,
+                        primary: Colors.black54,
+                        // side: BorderSide(color: Colors.red, width: 5), //<-- SEE HERE
+                      ),
+                      onPressed: () {},
+                      child: const Text(
+                        'SUBMIT',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    )
+                  ],
                 ),
-
-                Container(
-                  child: Center(
-                    child: new Column(
-                      children:[
-                        OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            backgroundColor: light_green,
-                            primary: Colors.black54,
-                            // side: BorderSide(color: Colors.red, width: 5), //<-- SEE HERE
-                          ),
-                          onPressed: () {},
-                          child: const Text(
-                            'SUBMIT',
-                            style: TextStyle(fontSize: 20),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-
-
-
-
-
-              ],
-            ),
-
+              ),
+            ],
+          ),
         ),
         color: background_green,
-
         body: SafeArea(
           child: Stack(
             children: [
@@ -252,103 +220,107 @@ class _ReportScreenState extends State<ReportScreen> {
                     if (snapshot.hasData) {
                       final snap = snapshot.data!.docs;
                       return
-                        // ListView.builder(
-                        //   shrinkWrap: true,
-                        //   primary: false,
-                        //   itemCount: snap.length,
-                        //   itemBuilder: (context, index) {
-                        //     return Text(snap[index]['lat'].toString() +
-                        //         ' : ' +
-                        //         snap[index]['lng'].toString());
-                        //   },
-                        // );
-                        StreamBuilder<Position>(
-                            stream: getCurrentLocation(),
-                            builder: (context, snapshot) {
-                              if (!snapshot.hasData) {
-                                return const Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              }
-                              currentPoint = LatLng(snapshot.data?.latitude,
-                                  snapshot.data?.longitude);
-                              // Provider.of<LocData>(context, listen: false).changePos(point);
-                              return Column(
-                                children: [
-                                  // Center(
-                                  //   child: Column(
-                                  //     children: [
-                                  //       // Provider.of<LocData>(context, listen: false).changePosWidget(point),
-                                  //       Text(
-                                  //         "LAT :" +
-                                  //             currentPoint.latitude.toString(),
-                                  //         style: TextStyle(
-                                  //             color: Colors.pinkAccent,
-                                  //             fontSize: 25),
-                                  //       ),
-                                  //       Text(
-                                  //         "LNG :" +
-                                  //             currentPoint.longitude.toString(),
-                                  //         style: TextStyle(
-                                  //             color: Colors.purple,
-                                  //             fontSize: 25),
-                                  //       ),
-                                  //     ],
-                                  //   ),
-                                  // ),
-                                  Expanded(
-                                    child: FlutterMap(
-                                      mapController: mapController,
-                                      options: MapOptions(
-                                          center: currentPoint,
-                                          zoom: 18.0,
-                                          minZoom: 11.0,
-                                          maxZoom: 17.0,
-                                          interactiveFlags:
-                                          InteractiveFlag.pinchZoom |
-                                          InteractiveFlag.drag,
-                                          plugins: [
-                                            MarkerClusterPlugin(),
-                                          ]),
-                                      layers: [
-                                        TileLayerOptions(
-                                            urlTemplate:
-                                            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                                            subdomains: ['a', 'b', 'c']),
-                                        MarkerLayerOptions(
-                                            markers: List.generate(
-                                                snap.length,
-                                                    (index) => Marker(
-                                                    width: 50,
-                                                    height: 50,
-                                                    point: LatLng(
-                                                        snap[index]['lat'],
-                                                        snap[index]['lng']),
-                                                    builder: (context) =>
-                                                    const Icon(
-                                                      Icons.location_on,
-                                                      color: Colors.blue,
-                                                      size: 50,
-                                                    ))) +
-                                                [
-                                                  Marker(
-                                                      width: 100.0,
-                                                      height: 100.0,
-                                                      point: currentPoint,
-                                                      builder: (context) =>
-                                                      const Icon(
-                                                        Icons.location_on,
-                                                        color: Colors
-                                                            .redAccent,
-                                                        size: 50,
-                                                      ))
-                                                ]),
-                                      ],
+                          // ListView.builder(
+                          //   shrinkWrap: true,
+                          //   primary: false,
+                          //   itemCount: snap.length,
+                          //   itemBuilder: (context, index) {
+                          //     return Text(snap[index]['lat'].toString() +
+                          //         ' : ' +
+                          //         snap[index]['lng'].toString());
+                          //   },
+                          // );
+                          StreamBuilder<Position>(
+                              stream: getCurrentLocation(),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }
+                                currentPoint = LatLng(snapshot.data?.latitude,
+                                    snapshot.data?.longitude);
+                                // Provider.of<LocData>(context, listen: false).changePos(point);
+                                return Column(
+                                  children: [
+                                    // Center(
+                                    //   child: Column(
+                                    //     children: [
+                                    //       // Provider.of<LocData>(context, listen: false).changePosWidget(point),
+                                    //       Text(
+                                    //         "LAT :" +
+                                    //             currentPoint.latitude.toString(),
+                                    //         style: TextStyle(
+                                    //             color: Colors.pinkAccent,
+                                    //             fontSize: 25),
+                                    //       ),
+                                    //       Text(
+                                    //         "LNG :" +
+                                    //             currentPoint.longitude.toString(),
+                                    //         style: TextStyle(
+                                    //             color: Colors.purple,
+                                    //             fontSize: 25),
+                                    //       ),
+                                    //     ],
+                                    //   ),
+                                    // ),
+                                    Expanded(
+                                      child: FlutterMap(
+                                        mapController: mapController,
+                                        options: MapOptions(
+                                            center: currentPoint,
+                                            zoom: 18.0,
+                                            minZoom: 11.0,
+                                            maxZoom: 17.0,
+                                            interactiveFlags:
+                                                InteractiveFlag.pinchZoom |
+                                                    InteractiveFlag.drag,
+                                            plugins: [
+                                              MarkerClusterPlugin(),
+                                            ]),
+                                        layers: [
+                                          TileLayerOptions(
+                                              urlTemplate:
+                                                  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                                              subdomains: ['a', 'b', 'c']),
+                                          MarkerLayerOptions(
+                                              markers: List.generate(
+                                                      snap.length,
+                                                      (index) => Marker(
+                                                          width: 50,
+                                                          height: 50,
+                                                          point: LatLng(
+                                                              snap[index]
+                                                                  ['lat'],
+                                                              snap[index]
+                                                                  ['lng']),
+                                                          builder: (context) =>
+                                                              const Icon(
+                                                                Icons
+                                                                    .location_on,
+                                                                color:
+                                                                    Colors.blue,
+                                                                size: 50,
+                                                              ))) +
+                                                  [
+                                                    Marker(
+                                                        width: 100.0,
+                                                        height: 100.0,
+                                                        point: currentPoint,
+                                                        builder: (context) =>
+                                                            const Icon(
+                                                              Icons.location_on,
+                                                              color: Colors
+                                                                  .redAccent,
+                                                              size: 50,
+                                                            ))
+                                                  ]),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              );
-                            });
+                                  ],
+                                );
+                              });
                     } else {
                       return StreamBuilder<Position>(
                           stream: getCurrentLocation(),
@@ -392,15 +364,15 @@ class _ReportScreenState extends State<ReportScreen> {
                                         minZoom: 11.0,
                                         maxZoom: 17.0,
                                         interactiveFlags:
-                                        InteractiveFlag.pinchZoom |
-                                        InteractiveFlag.drag,
+                                            InteractiveFlag.pinchZoom |
+                                                InteractiveFlag.drag,
                                         plugins: [
                                           MarkerClusterPlugin(),
                                         ]),
                                     layers: [
                                       TileLayerOptions(
                                           urlTemplate:
-                                          "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                                              "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                                           subdomains: ['a', 'b', 'c']),
                                       MarkerLayerOptions(markers: [
                                         Marker(
@@ -408,10 +380,10 @@ class _ReportScreenState extends State<ReportScreen> {
                                             height: 100.0,
                                             point: currentPoint,
                                             builder: (context) => const Icon(
-                                              Icons.location_on,
-                                              color: Colors.redAccent,
-                                              size: 50,
-                                            ))
+                                                  Icons.location_on,
+                                                  color: Colors.redAccent,
+                                                  size: 50,
+                                                ))
                                       ]),
                                     ],
                                   ),
@@ -421,20 +393,10 @@ class _ReportScreenState extends State<ReportScreen> {
                           });
                     }
                   }),
-
-
             ],
-
-
           ),
-
         ),
       ),
-
-
-
-
-
     );
   }
 }
