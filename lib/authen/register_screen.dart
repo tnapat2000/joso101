@@ -3,6 +3,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:joso101/utils/basecard.dart';
 import 'package:joso101/utils/colors.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../map/MapData.dart';
+import '../map/map_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -16,6 +21,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String email = "";
   String password = "";
   String errorMsg = "";
+  late SharedPreferences prefs;
 
   @override
   void initState() {
@@ -26,6 +32,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void initFirebase() async {
     await Firebase.initializeApp();
     _auth = FirebaseAuth.instance;
+    prefs = await SharedPreferences.getInstance();
+  }
+
+  void persistUser() async {
+    prefs.setString("currentUserEmail", email);
+    prefs.setString("currentUserPassword", password);
+  }
+
+  String getUserEmail()  {
+    return prefs.getString("currentUserEmail") ?? "no one";
+  }
+
+  String getUserPass() {
+    return prefs.getString("currentUserPassword") ?? "no one";
+  }
+
+  void setLoggedIn(bool value)  {
+    prefs.setBool("loggedIn", value);
+  }
+
+  bool getLoginStatus()  {
+    return prefs.getBool("loggedIn") ?? false;
   }
 
   @override
@@ -84,7 +112,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
               onTap: () async {
-                if (email == "" && password == "") {
+                if (email == "" || password == "") {
                   setState(() {
                     errorMsg = "Invalid Username or Password";
                   });
@@ -97,20 +125,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 try {
                   final newUser = await _auth.createUserWithEmailAndPassword(
                       email: email, password: password);
-                  print("register $email, $password");
-                  // final user = await _auth.signInWithEmailAndPassword(email: email, password: password);
-                  // if (user != null) {
-                  //   print("POP TO MAP SCREEN");
-                  // }
-                  // else {
-                  //   setState(() {
-                  //     errorMsg = "Login is failed";
-                  //   });
-                  // }
+                  print("$email with $password created");
+                  final user = await _auth.signInWithEmailAndPassword(
+                      email: email, password: password);
+                  if (user != null) {
+                    persistUser();
+                    setLoggedIn(true);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ChangeNotifierProvider(
+                                  create: (context) => MapData(),
+                                  child: MapScreen(),
+                                )));
+                  } else {
+                    setState(() {
+                      errorMsg = "Login is failed";
+                    });
+                  }
                 } catch (e) {
                   print(e);
                 }
-
               },
             )
           ],

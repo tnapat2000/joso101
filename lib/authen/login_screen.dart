@@ -1,10 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:joso101/tutorial/myhomepage.dart';
 import 'package:joso101/utils/basecard.dart';
 import 'package:joso101/utils/colors.dart';
 import 'package:joso101/map/map_screen.dart';
 import 'package:joso101/authen/register_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../map/MapData.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -18,6 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
   String email = "";
   String password = "";
   String errorMsg = "";
+  late SharedPreferences prefs;
 
   @override
   void initState() {
@@ -28,6 +34,28 @@ class _LoginScreenState extends State<LoginScreen> {
   void initFirebase() async {
     await Firebase.initializeApp();
     _auth = FirebaseAuth.instance;
+    prefs = await SharedPreferences.getInstance();
+  }
+
+  void persistUser() async {
+    prefs.setString("currentUserEmail", email);
+    prefs.setString("currentUserPassword", password);
+  }
+
+  String getUserEmail()  {
+    return prefs.getString("currentUserEmail") ?? "no one";
+  }
+
+  String getUserPass() {
+    return prefs.getString("currentUserPassword") ?? "no one";
+  }
+
+  void setLoggedIn(bool value)  {
+    prefs.setBool("loggedIn", value);
+  }
+
+  bool getLoginStatus()  {
+    return prefs.getBool("loggedIn") ?? false;
   }
 
   @override
@@ -76,8 +104,8 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             BaseCard(
               color: light_green,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Text(
                   "Login",
                   style: TextStyle(
@@ -86,7 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               onTap: () async {
-                if (email == "" && password == "") {
+                if ((email == "" || password == "")) {
                   setState(() {
                     errorMsg = "Please log in to use the app";
                   });
@@ -100,9 +128,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       email: email, password: password);
                   print("login $email, $password");
                   if (user != null) {
-                    print("POP TO MAP SCREEN");
+                    persistUser();
+                    setLoggedIn(true);
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => MapScreen()));
+                        MaterialPageRoute(builder: (context) => ChangeNotifierProvider(
+                          create: (context) => MapData(),
+                          child: MapScreen(),
+                        )));
+
                   } else {
                     setState(() {
                       errorMsg = "Incorrect Username or Password";

@@ -33,7 +33,7 @@ class _MapScreenState extends State<MapScreen> {
   void initState() {
     super.initState();
     mapController = MapController();
-    currentUser = "tester1@gmail.com";
+    // currentUser = "tester1@gmail.com";
     initFirebase();
   }
 
@@ -41,11 +41,11 @@ class _MapScreenState extends State<MapScreen> {
     _auth = FirebaseAuth.instance;
     _fstore = FirebaseFirestore.instance;
     //  for testing
-    await _auth.signInWithEmailAndPassword(
-        email: "tester1@gmail.com", password: "peepoo");
+    // await _auth.signInWithEmailAndPassword(
+    //     email: "tester1@gmail.com", password: "peepoo");
 
     currentUser = _auth.currentUser?.email ?? "none";
-    print(currentUser);
+    // print(currentUser);
   }
 
   Stream<Position> getCurrentLocation() {
@@ -111,7 +111,7 @@ class _MapScreenState extends State<MapScreen> {
               iconSize: 35,
               icon: Icon(Icons.sms_failed_outlined))
         ],
-        title: Text("MAP"),
+        title: Text(currentUser),
       ),
       body: SafeArea(
         child: Stack(
@@ -198,7 +198,8 @@ class _MapScreenState extends State<MapScreen> {
                                           child: Padding(
                                             padding: const EdgeInsets.all(2.0),
                                             child: IconButton(
-                                              icon: Icon(Icons.radar),
+                                              icon:
+                                                  Icon(Icons.refresh_outlined),
                                               onPressed: () async {
                                                 currentLocation =
                                                     await _getGeoLocationPosition();
