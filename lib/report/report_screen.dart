@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
-=======
+
 import 'package:flutter/rendering.dart';
->>>>>>> temp-branch
+
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:latlong/latlong.dart';
@@ -128,7 +127,14 @@ class _ReportScreenState extends State<ReportScreen> {
                     child: Center(
                       child: new Column(
                         children:[
-                          Text("Location:"),
+                          Icon( Icons.arrow_upward_outlined, ),
+                          Text(
+                          'Location:',
+                              style: TextStyle(
+                                  color: Colors.grey[800],
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20),
+                          ),
                           const Padding(
                             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                             child: TextField(
@@ -146,7 +152,13 @@ class _ReportScreenState extends State<ReportScreen> {
                   child: Center(
                     child: new Column(
                       children:[
-                        Text("Causes:"),
+                        Text(
+                          'Cause:',
+                          style: TextStyle(
+                              color: Colors.grey[800],
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20),
+                        ),
                         DropdownButton(
 
                           // Initial Value
@@ -178,7 +190,13 @@ class _ReportScreenState extends State<ReportScreen> {
                   child: Center(
                     child: new Column(
                       children:[
-                        Text("Details:"),
+                        Text(
+                          'Details:',
+                          style: TextStyle(
+                              color: Colors.grey[800],
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20),
+                        ),
                         const Padding(
                           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                           child: TextField(
