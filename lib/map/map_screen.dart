@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
+import 'package:joso101/map/accident_class.dart';
+import 'package:joso101/map/accident_detail.dart';
 import 'package:joso101/report/report_screen.dart';
 import 'package:joso101/utils/basecard.dart';
 import 'package:latlong/latlong.dart';
@@ -107,10 +109,8 @@ class _MapScreenState extends State<MapScreen> {
                 currentLocation = await _getGeoLocationPosition();
                 setState(() {
                   print("REPORT");
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ReportScreen()));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => ReportScreen()));
                 });
               },
               iconSize: 35,
@@ -171,11 +171,40 @@ class _MapScreenState extends State<MapScreen> {
                                                       // if (isInDangerZone(LatLng(snap[index]['lat'], snap[index]['lng']), defaultPrecision)){
                                                       //   print("DANGER");
                                                       // }
-                                                      return const Icon(
-                                                        Icons.location_on,
-                                                        color: Colors.red,
-                                                        size: 50,
-                                                      );
+                                                      return IconButton(
+                                                          onPressed: () {
+                                                            Accident acc = Accident(
+                                                                email: snap[index]
+                                                                    ["email"],
+                                                                acc_date: snap[index][
+                                                                    "acc_date_time"],
+                                                                lat: snap[index]
+                                                                    ["lat"],
+                                                                lng: snap[index]
+                                                                    ["lng"],
+                                                                expw_step: snap[
+                                                                        index][
+                                                                    "expw_step"],
+                                                                injured: snap[
+                                                                        index]
+                                                                    ["injured"],
+                                                                death: snap[index]
+                                                                    ["death"],
+                                                                cause: snap[index]
+                                                                    ["cause"]);
+                                                            Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                    builder: (context) =>
+                                                                        AccidentDetailScreen(
+                                                                            accident:
+                                                                                acc)));
+                                                          },
+                                                          icon: Icon(
+                                                            Icons.location_on,
+                                                            color: Colors.red,
+                                                            size: 50,
+                                                          ));
                                                     })) +
                                             [
                                               Marker(

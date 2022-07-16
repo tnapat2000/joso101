@@ -1,8 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class Accident {
   final String email;
-  final DateTime acc_date;
+  final Timestamp acc_date;
   final double lat;
   final double lng;
   final String expw_step;
