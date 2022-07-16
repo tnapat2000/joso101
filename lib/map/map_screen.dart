@@ -163,6 +163,9 @@ class _MapScreenState extends State<MapScreen> {
                                                         snap[index]['lat'],
                                                         snap[index]['lng']),
                                                     builder: (context) {
+                                                      // if (isInDangerZone(LatLng(snap[index]['lat'], snap[index]['lng']), defaultPrecision)){
+                                                      //   print("DANGER");
+                                                      // }
                                                       return const Icon(
                                                         Icons.location_on,
                                                         color: Colors.red,
