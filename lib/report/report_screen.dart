@@ -127,6 +127,7 @@ class _ReportScreenState extends State<ReportScreen> {
                     child: Center(
                       child: new Column(
                         children:[
+                          Icon( Icons.arrow_upward_outlined, ),
                           Text(
                           'Location:',
                               style: TextStyle(
