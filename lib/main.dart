@@ -1,5 +1,13 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:joso101/report/report_screen.dart';
+
+// import 'package:joso101/LocData.dart';
+import 'map/map_screen.dart';
+import 'tutorial/pageone.dart';
+import 'tutorial/pagethree.dart';
+import 'tutorial/pagetwo.dart';
+import 'package:provider/provider.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -40,7 +48,8 @@ class MyApp extends StatelessWidget {
       // showMap
       //     ? const MapScreen()
       //     : const MyHomePage(title: 'Flutter Demo Home Page'),
-      MapScreen()
+      // MapScreen()
+      ReportScreen()
     );
   }
 }
