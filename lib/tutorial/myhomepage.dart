@@ -3,7 +3,6 @@ import 'package:joso101/authen/login_screen.dart';
 import 'package:joso101/tutorial/pageone.dart';
 import 'package:joso101/tutorial/pagethree.dart';
 import 'package:joso101/tutorial/pagetwo.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 

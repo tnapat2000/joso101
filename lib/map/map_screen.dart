@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
+import 'package:joso101/report/report_screen.dart';
 import 'package:joso101/utils/basecard.dart';
 import 'package:latlong/latlong.dart';
 import 'package:geolocator/geolocator.dart';
@@ -106,6 +107,10 @@ class _MapScreenState extends State<MapScreen> {
                 currentLocation = await _getGeoLocationPosition();
                 setState(() {
                   print("REPORT");
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ReportScreen()));
                 });
               },
               iconSize: 35,
