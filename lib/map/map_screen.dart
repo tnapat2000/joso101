@@ -171,18 +171,19 @@ class _MapScreenState extends State<MapScreen> {
                                                       // if (isInDangerZone(LatLng(snap[index]['lat'], snap[index]['lng']), defaultPrecision)){
                                                       //   print("DANGER");
                                                       // }
-                                                      return IconButton(
+                                                      return
+                                                        IconButton(
                                                           onPressed: () {
                                                             Accident acc = Accident(
                                                                 email: snap[index]
                                                                     ["email"],
-                                                                acc_date: snap[index][
+                                                                accDate: snap[index][
                                                                     "acc_date_time"],
                                                                 lat: snap[index]
                                                                     ["lat"],
                                                                 lng: snap[index]
                                                                     ["lng"],
-                                                                expw_step: snap[
+                                                                expwStep: snap[
                                                                         index][
                                                                     "expw_step"],
                                                                 injured: snap[
@@ -204,7 +205,8 @@ class _MapScreenState extends State<MapScreen> {
                                                             Icons.location_on,
                                                             color: Colors.red,
                                                             size: 50,
-                                                          ));
+                                                          )
+                                                        );
                                                     })) +
                                             [
                                               Marker(
