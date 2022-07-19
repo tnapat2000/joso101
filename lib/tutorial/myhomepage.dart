@@ -33,29 +33,21 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [PageOne(), PageTwo(), PageThree()],
         ),
       ),
-      bottomSheet:
-      isLastPage
+      bottomSheet: isLastPage
           ? Padding(
               padding: EdgeInsets.fromLTRB(110, 0, 20, 15),
               child:
-              // Text('Please Login', style: TextStyle(fontSize: 32))
-              TextButton(
-                  onPressed: () async {
-                    final prefs = await SharedPreferences.getInstance();
-                    // bool isLoggedIn = prefs.getBool("loggedIn") ?? false;
-
-                    // if (isLoggedIn) {
-                    prefs.setBool('showHome', true);
-                    print(prefs.getBool('showHome'));
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => LoginScreen()));
-                    // }
-                  },
-                  child:
-                      Text('Proceed to Login', style: TextStyle(fontSize: 24))),
+                  // Text('Please Login', style: TextStyle(fontSize: 32))
+                  TextButton(
+                      onPressed: ()  {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (context) => LoginScreen()));
+                        // }
+                      },
+                      child: Text('Proceed to Login',
+                          style: TextStyle(fontSize: 24))),
             )
-          :
-      Container(
+          : Container(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               height: 80,
               child: Row(

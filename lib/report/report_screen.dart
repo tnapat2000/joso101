@@ -322,75 +322,9 @@ class _ReportScreenState extends State<ReportScreen> {
                                 );
                               });
                     } else {
-                      return StreamBuilder<Position>(
-                          stream: getCurrentLocation(),
-                          builder: (context, snapshot) {
-                            if (!snapshot.hasData) {
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            }
-                            currentPoint = LatLng(snapshot.data?.latitude,
-                                snapshot.data?.longitude);
-                            // Provider.of<LocData>(context, listen: false).changePos(point);
-                            return Column(
-                              children: [
-                                Center(
-                                  child: Column(
-                                    children: [
-                                      // Provider.of<LocData>(context, listen: false).changePosWidget(point),
-                                      Text(
-                                        "LAT :" +
-                                            currentPoint.latitude.toString(),
-                                        style: TextStyle(
-                                            color: Colors.pinkAccent,
-                                            fontSize: 25),
-                                      ),
-                                      Text(
-                                        "LNG :" +
-                                            currentPoint.longitude.toString(),
-                                        style: TextStyle(
-                                            color: Colors.purple, fontSize: 25),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Expanded(
-                                  child: FlutterMap(
-                                    mapController: mapController,
-                                    options: MapOptions(
-                                        center: currentPoint,
-                                        zoom: 18.0,
-                                        minZoom: 11.0,
-                                        maxZoom: 17.0,
-                                        interactiveFlags:
-                                            InteractiveFlag.pinchZoom |
-                                                InteractiveFlag.drag,
-                                        plugins: [
-                                          MarkerClusterPlugin(),
-                                        ]),
-                                    layers: [
-                                      TileLayerOptions(
-                                          urlTemplate:
-                                              "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                                          subdomains: ['a', 'b', 'c']),
-                                      MarkerLayerOptions(markers: [
-                                        Marker(
-                                            width: 100.0,
-                                            height: 100.0,
-                                            point: currentPoint,
-                                            builder: (context) => const Icon(
-                                                  Icons.location_on,
-                                                  color: Colors.redAccent,
-                                                  size: 50,
-                                                ))
-                                      ]),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            );
-                          });
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
                     }
                   }),
             ],

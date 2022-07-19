@@ -30,7 +30,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void initFirebase() async {
-    await Firebase.initializeApp();
+    // await Firebase.initializeApp();
     _auth = FirebaseAuth.instance;
     prefs = await SharedPreferences.getInstance();
   }
@@ -40,7 +40,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     prefs.setString("currentUserPassword", password);
   }
 
-  String getUserEmail()  {
+  String getUserEmail() {
     return prefs.getString("currentUserEmail") ?? "no one";
   }
 
@@ -48,11 +48,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return prefs.getString("currentUserPassword") ?? "no one";
   }
 
-  void setLoggedIn(bool value)  {
+  void setLoggedIn(bool value) {
     prefs.setBool("loggedIn", value);
   }
 
-  bool getLoginStatus()  {
+  bool getLoginStatus() {
     return prefs.getBool("loggedIn") ?? false;
   }
 
@@ -125,18 +125,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 try {
                   final newUser = await _auth.createUserWithEmailAndPassword(
                       email: email, password: password);
-                  print("$email with $password created");
-                  final user = await _auth.signInWithEmailAndPassword(
+                  // print("$email with $password created");
+                  await _auth.signInWithEmailAndPassword(
                       email: email, password: password);
-                  if (user != null) {
+                  String user = _auth.currentUser?.email ?? "NO ONE";
+                  if (user != "NO ONE") {
                     persistUser();
                     setLoggedIn(true);
+                    final prefs = await SharedPreferences.getInstance();
+                    prefs.setBool('showHome', true);
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => ChangeNotifierProvider(
                                   create: (context) => MapData(),
-                                  child: MapScreen(),
+                                  child: MapScreen(
+                                    // currentUsername: user,
+                                    // currentPassword: password,
+                                  ),
                                 )));
                   } else {
                     setState(() {

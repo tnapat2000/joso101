@@ -32,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void initFirebase() async {
-    await Firebase.initializeApp();
+    // await Firebase.initializeApp();
     _auth = FirebaseAuth.instance;
     prefs = await SharedPreferences.getInstance();
   }
@@ -42,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
     prefs.setString("currentUserPassword", password);
   }
 
-  String getUserEmail()  {
+  String getUserEmail() {
     return prefs.getString("currentUserEmail") ?? "no one";
   }
 
@@ -50,11 +50,11 @@ class _LoginScreenState extends State<LoginScreen> {
     return prefs.getString("currentUserPassword") ?? "no one";
   }
 
-  void setLoggedIn(bool value)  {
+  void setLoggedIn(bool value) {
     prefs.setBool("loggedIn", value);
   }
 
-  bool getLoginStatus()  {
+  bool getLoginStatus() {
     return prefs.getBool("loggedIn") ?? false;
   }
 
@@ -124,18 +124,24 @@ class _LoginScreenState extends State<LoginScreen> {
                   });
                 }
                 try {
-                  final user = await _auth.signInWithEmailAndPassword(
+                  await _auth.signInWithEmailAndPassword(
                       email: email, password: password);
-                  print("login $email, $password");
-                  if (user != null) {
+                  String user = _auth.currentUser?.email ?? "NO ONE";
+                  if (user != "NO ONE") {
                     persistUser();
                     setLoggedIn(true);
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => ChangeNotifierProvider(
-                          create: (context) => MapData(),
-                          child: MapScreen(),
-                        )));
-
+                    final prefs = await SharedPreferences.getInstance();
+                    prefs.setBool('showHome', true);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ChangeNotifierProvider(
+                                  create: (context) => MapData(),
+                                  child: MapScreen(
+                                    // currentUsername: user,
+                                    // currentPassword: password,
+                                  ),
+                                )));
                   } else {
                     setState(() {
                       errorMsg = "Incorrect Username or Password";
@@ -149,8 +155,8 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             BaseCard(
               color: light_green,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Text(
                   "Register",
                   style: TextStyle(

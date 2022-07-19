@@ -20,39 +20,52 @@ Future<void> main() async {
   final bool shallShowHome = prefs.getBool('showHome') ?? false;
   final bool isLoggedIn = prefs.getBool('loggedIn') ?? false;
 
+  final String latestUser = prefs.getString('currentUserEmail') ?? "no one";
+  final String latestPass = prefs.getString('currentUserPassword') ?? "";
+
+  print("$latestUser ,$latestPass");
+
   runApp(MyApp(
     showMap: shallShowHome,
-    isLoggedIn: isLoggedIn,
+    latestUser: latestUser,
+    latestPass: latestPass,
   ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key, required this.showMap, required this.isLoggedIn})
+  MyApp(
+      {Key? key,
+      required this.showMap,
+      required this.latestUser,
+      required this.latestPass})
       : super(key: key);
 
   final bool showMap;
-  final bool isLoggedIn;
-
+  final String latestUser;
+  final String latestPass;
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home:
-            // RegisterScreen()
-            // LoginScreen()
-            showMap
-                ? ChangeNotifierProvider(
-                    create: (context) => MapData(),
-                    child: MapScreen(),
-                  )
-                : const MyHomePage(),
-        //     ChangeNotifierProvider(
-        //   create: (context) => MapData(),
-        //   child: MapScreen(),
-        // )
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home:
+          // RegisterScreen()
+          // LoginScreen()
+          showMap
+              ? ChangeNotifierProvider(
+                  create: (context) => MapData(),
+                  child: MapScreen(
+                    // currentUsername: latestUser,
+                    // currentPassword: latestPass,
+                  ),
+                )
+              : const MyHomePage(),
+      //     ChangeNotifierProvider(
+      //   create: (context) => MapData(),
+      //   child: MapScreen(),
+      // )
     );
   }
 }
