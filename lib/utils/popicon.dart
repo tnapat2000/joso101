@@ -1,32 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:joso101/map/accident_class.dart';
 import 'package:joso101/utils/hero_dialog_route.dart';
 
 class PopUpIcon extends StatelessWidget {
-  const PopUpIcon({Key? key}) : super(key: key);
+  const PopUpIcon({required this.accident, required this.herotag});
+
+  final Accident accident;
+  final String herotag;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(20),
-      child: GestureDetector(
-        onTap: () {
-          Navigator.of(context).push(HeroDialogRoute(builder: (context) {
-            return _PopUpIcon();
-          }));
-        },
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(HeroDialogRoute(builder: (context) {
+          return _PopUpIcon(
+            acc: accident,
+            herotag: herotag,
+          );
+        }));
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(0),
         child: Hero(
-          tag: _heroTag,
+          tag: herotag,
           createRectTween: (begin, end) {
             return RectTween(begin: begin, end: end);
           },
-          child: Material(
-            elevation: 2,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-            child: const Icon(
-              Icons.print,
-              size: 56,
-            ),
+          child: const Icon(
+            Icons.location_on,
+            size: 56,
+            color: Colors.red,
           ),
         ),
       ),
@@ -34,31 +37,41 @@ class PopUpIcon extends StatelessWidget {
   }
 }
 
-const String _heroTag = 'hero1';
-
 class _PopUpIcon extends StatelessWidget {
-  const _PopUpIcon({Key? key}) : super(key: key);
+  const _PopUpIcon({required this.acc, required this.herotag});
+
+  final String herotag;
+  final Accident acc;
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: EdgeInsets.all(32),
+        padding: const EdgeInsets.all(32),
         child: Hero(
-          tag: _heroTag,
+          tag: herotag,
           createRectTween: (begin, end) {
             return RectTween(begin: begin, end: end);
           },
           child: Material(
               elevation: 2,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30)),
+                  borderRadius: BorderRadius.circular(20)),
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    children: [Text("data here")],
+                    children: [
+                      Text(acc.email),
+                      Text(acc.cause),
+                      Text(acc.death.toString()),
+                      Text(acc.injured.toString()),
+                      Text(acc.accDate.toDate().toString()),
+                      acc.expwStep != null
+                          ? Text(acc.expwStep.toString())
+                          : const Text("")
+                    ],
                   ),
                 ),
               )),

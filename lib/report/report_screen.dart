@@ -8,10 +8,13 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:latlong/latlong.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 // import 'package:vector_math/vector_math.dart';
 import 'package:joso101/utils/colors.dart';
+
+import '../map/MapData.dart';
 
 class ReportScreen extends StatefulWidget {
   const ReportScreen({Key? key}) : super(key: key);
@@ -54,37 +57,6 @@ class _ReportScreenState extends State<ReportScreen> {
     return Geolocator.getPositionStream();
   }
 
-  Future<Position> _getGeoLocationPosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    // Test if location services are enabled.
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      await Geolocator.openLocationSettings();
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
-    return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-  }
-
-  void _gotoLocation(double lat, double long) {
-    mapController.move(LatLng(lat, long), 17.0);
-  }
-
   // Initial Selected Value
   String dropdownvalue = 'Out of gas';
 
@@ -101,19 +73,7 @@ class _ReportScreenState extends State<ReportScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          IconButton(
-              onPressed: () async {
-                currentLocation = await _getGeoLocationPosition();
-                setState(() {
-                  currentPoint = LatLng(
-                      currentLocation.latitude, currentLocation.longitude);
-                  _gotoLocation(
-                      currentLocation.latitude, currentLocation.longitude);
-                });
-              },
-              icon: Icon(Icons.refresh))
-        ],
+        backgroundColor: Provider.of<MapData>(context).statusColor,
         title: Text("REPORT"),
       ),
       body: SlidingUpPanel(
@@ -219,108 +179,77 @@ class _ReportScreenState extends State<ReportScreen> {
                       AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (snapshot.hasData) {
                       final snap = snapshot.data!.docs;
-                      return
-                          // ListView.builder(
-                          //   shrinkWrap: true,
-                          //   primary: false,
-                          //   itemCount: snap.length,
-                          //   itemBuilder: (context, index) {
-                          //     return Text(snap[index]['lat'].toString() +
-                          //         ' : ' +
-                          //         snap[index]['lng'].toString());
-                          //   },
-                          // );
-                          StreamBuilder<Position>(
-                              stream: getCurrentLocation(),
-                              builder: (context, snapshot) {
-                                if (!snapshot.hasData) {
-                                  return const Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                }
-                                currentPoint = LatLng(snapshot.data?.latitude,
-                                    snapshot.data?.longitude);
-                                // Provider.of<LocData>(context, listen: false).changePos(point);
-                                return Column(
-                                  children: [
-                                    // Center(
-                                    //   child: Column(
-                                    //     children: [
-                                    //       // Provider.of<LocData>(context, listen: false).changePosWidget(point),
-                                    //       Text(
-                                    //         "LAT :" +
-                                    //             currentPoint.latitude.toString(),
-                                    //         style: TextStyle(
-                                    //             color: Colors.pinkAccent,
-                                    //             fontSize: 25),
-                                    //       ),
-                                    //       Text(
-                                    //         "LNG :" +
-                                    //             currentPoint.longitude.toString(),
-                                    //         style: TextStyle(
-                                    //             color: Colors.purple,
-                                    //             fontSize: 25),
-                                    //       ),
-                                    //     ],
-                                    //   ),
-                                    // ),
-                                    Expanded(
-                                      child: FlutterMap(
-                                        mapController: mapController,
-                                        options: MapOptions(
-                                            center: currentPoint,
-                                            zoom: 18.0,
-                                            minZoom: 11.0,
-                                            maxZoom: 17.0,
-                                            interactiveFlags:
-                                                InteractiveFlag.pinchZoom |
-                                                    InteractiveFlag.drag,
-                                            plugins: [
-                                              MarkerClusterPlugin(),
-                                            ]),
-                                        layers: [
-                                          TileLayerOptions(
-                                              urlTemplate:
-                                                  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                                              subdomains: ['a', 'b', 'c']),
-                                          MarkerLayerOptions(
-                                              markers: List.generate(
-                                                      snap.length,
-                                                      (index) => Marker(
-                                                          width: 50,
-                                                          height: 50,
-                                                          point: LatLng(
-                                                              snap[index]
-                                                                  ['lat'],
-                                                              snap[index]
-                                                                  ['lng']),
-                                                          builder: (context) =>
-                                                              const Icon(
-                                                                Icons
-                                                                    .location_on,
-                                                                color:
-                                                                    Colors.blue,
-                                                                size: 50,
-                                                              ))) +
-                                                  [
-                                                    Marker(
-                                                        width: 100.0,
-                                                        height: 100.0,
-                                                        point: currentPoint,
-                                                        builder: (context) =>
-                                                            const Icon(
+                      return StreamBuilder<Position>(
+                          stream: getCurrentLocation(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                            currentPoint = LatLng(snapshot.data?.latitude,
+                                snapshot.data?.longitude);
+                            // Provider.of<LocData>(context, listen: false).changePos(point);
+                            return Column(
+                              children: [
+                                Expanded(
+                                  child: FlutterMap(
+                                    mapController: mapController,
+                                    options: MapOptions(
+                                        center: currentPoint,
+                                        zoom: 18.0,
+                                        minZoom: 11.0,
+                                        maxZoom: 18.0,
+                                        interactiveFlags:
+                                            InteractiveFlag.pinchZoom |
+                                                InteractiveFlag.drag,
+                                        plugins: [
+                                          MarkerClusterPlugin(),
+                                        ]),
+                                    layers: [
+                                      TileLayerOptions(
+                                          urlTemplate:
+                                              "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                                          subdomains: ['a', 'b', 'c']),
+                                      MarkerLayerOptions(
+                                          markers: List.generate(
+                                                  snap.length,
+                                                  (index) => Marker(
+                                                      width: 50,
+                                                      height: 50,
+                                                      point: LatLng(
+                                                          snap[index]['lat'],
+                                                          snap[index]['lng']),
+                                                      builder: (context) {
+                                                        // if (isInDangerZone(LatLng(snap[index]['lat'], snap[index]['lng']), defaultPrecision)){
+                                                        //   print("DANGER");
+                                                        // }
+                                                        return IconButton(
+                                                            onPressed: () {},
+                                                            icon: const Icon(
                                                               Icons.location_on,
-                                                              color: Colors
-                                                                  .redAccent,
+                                                              color: Colors.red,
                                                               size: 50,
-                                                            ))
-                                                  ]),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              });
+                                                            ));
+                                                      })) +
+                                              [
+                                                Marker(
+                                                    width: 150.0,
+                                                    height: 150.0,
+                                                    point: currentPoint,
+                                                    builder: (context) =>
+                                                        IconButton(
+                                                            color: Colors.red,
+                                                            onPressed: () {},
+                                                            icon: Image.asset(
+                                                                "assets/images/pin_accident.png")))
+                                              ]),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            );
+                          });
                     } else {
                       return const Center(
                         child: CircularProgressIndicator(),

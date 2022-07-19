@@ -5,17 +5,17 @@ class Accident {
   final Timestamp accDate;
   final double lat;
   final double lng;
-  final String expwStep;
+  String? expwStep;
   final int injured;
   final int death;
   final String cause;
 
-  const Accident({
+  Accident({
     required this.email,
     required this.accDate,
     required this.lat,
     required this.lng,
-    required this.expwStep,
+    this.expwStep,
     required this.injured,
     required this.death,
     required this.cause,
