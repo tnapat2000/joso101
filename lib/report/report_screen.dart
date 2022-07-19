@@ -1,3 +1,6 @@
+import 'dart:core';
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +34,11 @@ class _ReportScreenState extends State<ReportScreen> {
   LatLng currentPoint = LatLng(37.421871, -122.084122);
   late final MapController mapController;
   late List<Marker> accidents;
+  String? causeText;
+  int? deathText;
+  int? injuredText;
+
+
 
   @override
   void initState() {
@@ -79,25 +87,28 @@ class _ReportScreenState extends State<ReportScreen> {
           // child: Text("This is the sliding Widget"),
           child: Column(
             children: [
-              Container(
-                child: Center(
-                  child: Column(
-                    children: const [
-                      Text("Location:"),
-                      Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                        child: TextField(
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            hintText: 'Enter a location here',
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              // Container(
+              //   child: Center(
+              //     child: Column(
+              //       children: [
+              //         Text("Location:"),
+              //         Padding(
+              //           padding:
+              //               EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              //           child: TextField(
+              //             onChanged: (value){
+              //               locationText = value;
+              //             },
+              //             decoration: InputDecoration(
+              //               border: OutlineInputBorder(),
+              //               hintText: 'Enter a location here',
+              //             ),
+              //           ),
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              // ),
               Container(
                 child: Center(
                   child: Column(
@@ -123,6 +134,7 @@ class _ReportScreenState extends State<ReportScreen> {
                           setState(() {
                             dropdownvalue = newValue!;
                           });
+                          causeText = newValue;
                         },
                       ),
                     ],
@@ -131,15 +143,38 @@ class _ReportScreenState extends State<ReportScreen> {
               ),
               Center(
                 child: Column(
-                  children: const [
-                    Text("Details:"),
+                  children: [
+                    Text("Death:"),
                     Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                       child: TextField(
+                        onChanged: (value){
+                          deathText = int.parse(value);
+                        },
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
-                          hintText: 'Explain here',
+                          hintText: 'Enter the number of deaths',
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Center(
+                child: Column(
+                  children: [
+                    Text("Injured:"),
+                    Padding(
+                      padding:
+                      EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                      child: TextField(
+                        onChanged: (value){
+                          injuredText = int.parse(value);
+                        },
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: 'Enter the number of injured',
                         ),
                       ),
                     ),
@@ -155,7 +190,18 @@ class _ReportScreenState extends State<ReportScreen> {
                         primary: Colors.black54,
                         // side: BorderSide(color: Colors.red, width: 5), //<-- SEE HERE
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Map<String, dynamic> data = {
+                          'acc_date_time': FieldValue.serverTimestamp(),
+                          'cause': causeText ?? '',
+                          'death': deathText ?? '',
+                          'email': currentUser,
+                          'injured': injuredText ?? '',
+                          'lat': currentPoint.latitude,
+                          'lng': currentPoint.longitude,
+                        };
+                        _fstore.collection('accidentsFromUser').add(data);
+                      },
                       child: const Text(
                         'SUBMIT',
                         style: TextStyle(fontSize: 20),
