@@ -3,16 +3,17 @@ import 'package:joso101/map/accident_locs.dart';
 import 'package:joso101/utils/constants.dart';
 
 class ApiService {
-  Future<List<AccidentModel>?> getAccidents() async {
+  Future<AccidentModels?> getAccidents() async {
     try {
-      var url = Uri.parse(ApiConstant.baseUrl + ApiConstant.getAccidentInfoPage(3));
+      var url =
+          Uri.parse(ApiConstant.baseUrl + ApiConstant.getAccidentInfoPage(3));
       var response = await http.get(url);
       if (response.statusCode == 200) {
-        List<AccidentModel> _model = accidentModelFromJson(response.body);
+        AccidentModels _model = accModelsFromJson(response.body);
         return _model;
       }
     } catch (e) {
-      print(e.toString());
+      print("EXCEPTION: " + e.toString());
     }
     return null;
   }

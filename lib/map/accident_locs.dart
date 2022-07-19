@@ -1,23 +1,46 @@
+// To parse this JSON data, do
+//
+//     final welcome = welcomeFromJson(jsonString);
+
 import 'dart:convert';
 
-List<AccidentModel> accidentModelFromJson(String str) =>
-    List<AccidentModel>.from(
-        json.decode(str).map((x) => AccidentModel.fromJson(x)));
+AccidentModels accModelsFromJson(String str) =>
+    AccidentModels.fromJson(json.decode(str));
 
-String accidentModelToJson(List<AccidentModel> data) =>
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String accModelsToJson(AccidentModels data) => json.encode(data.toJson());
 
-class AccidentModel {
-  AccidentModel({
+class AccidentModels {
+  AccidentModels({
+    required this.resultCode,
+    required this.result,
+  });
+
+  final int resultCode;
+  final List<AccidentMod> result;
+
+  factory AccidentModels.fromJson(Map<String, dynamic> json) => AccidentModels(
+        resultCode: json["resultCode"],
+        result: List<AccidentMod>.from(
+            json["result"].map((x) => AccidentMod.fromJson(x))),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "resultCode": resultCode,
+        "result": List<dynamic>.from(result.map((x) => x.toJson())),
+      };
+}
+
+class AccidentMod {
+  AccidentMod({
     required this.id,
     required this.accidentDate,
     required this.accidentTime,
     required this.expwStep,
     required this.weatherState,
-    required this.injuredMan,
-    required this.injuredFemale,
+    required this.injurMan,
+    required this.injurFemel,
     required this.deadMan,
-    required this.deadFemale,
+    required this.deadFemel,
     required this.cause,
   });
 
@@ -26,22 +49,22 @@ class AccidentModel {
   final String accidentTime;
   final String expwStep;
   final WeatherState weatherState;
-  final int injuredMan;
-  final int injuredFemale;
+  final int injurMan;
+  final int injurFemel;
   final int deadMan;
-  final int deadFemale;
+  final int deadFemel;
   final String cause;
 
-  factory AccidentModel.fromJson(Map<String, dynamic> json) => AccidentModel(
+  factory AccidentMod.fromJson(Map<String, dynamic> json) => AccidentMod(
         id: json["_id"],
         accidentDate: DateTime.parse(json["accident_date"]),
         accidentTime: json["accident_time"],
         expwStep: json["expw_step"],
-        weatherState: weatherStateValues.map[json["weather_state"]]!,
-        injuredMan: json["injured_man"],
-        injuredFemale: json["injured_female"],
+        weatherState: weatherStateValues.map[json["weather_state"]] ?? WeatherState.EMPTY,
+        injurMan: json["injur_man"],
+        injurFemel: json["injur_femel"],
         deadMan: json["dead_man"],
-        deadFemale: json["dead_female"],
+        deadFemel: json["dead_femel"],
         cause: json["cause"],
       );
 
@@ -52,10 +75,10 @@ class AccidentModel {
         "accident_time": accidentTime,
         "expw_step": expwStep,
         "weather_state": weatherStateValues.reverse[weatherState],
-        "injured_man": injuredMan,
-        "injured_female": injuredFemale,
+        "injur_man": injurMan,
+        "injur_femel": injurFemel,
         "dead_man": deadMan,
-        "dead_female": deadFemale,
+        "dead_femel": deadFemel,
         "cause": cause,
       };
 }
@@ -67,12 +90,12 @@ final weatherStateValues = EnumValues(
 
 class EnumValues<T> {
   Map<String, T> map;
-  late Map<T, String> reverseMap;
+  Map<T, String> reverseMap = {};
 
   EnumValues(this.map);
 
   Map<T, String> get reverse {
-    // reverseMap;
+    reverseMap;
     return reverseMap;
   }
 }

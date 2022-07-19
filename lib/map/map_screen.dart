@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:joso101/map/accident_class.dart';
+import 'package:joso101/map/accident_locs.dart';
+import 'package:joso101/map/api_svc.dart';
 import 'package:joso101/report/report_screen.dart';
 import 'package:joso101/utils/basecard.dart';
 import 'package:joso101/utils/popicon.dart';
@@ -38,6 +40,7 @@ class _MapScreenState extends State<MapScreen> {
   late List<Marker> accidents;
   bool activeStatus = false;
   double defaultPrecision = 0.0001;
+  late List<AccidentMod>? _accModel = [];
 
   @override
   void initState() {
@@ -62,6 +65,12 @@ class _MapScreenState extends State<MapScreen> {
 
     currentUser = _auth.currentUser?.email ?? "none";
     print(currentUser);
+  }
+
+  void _getDataFromApi() async {
+    AccidentModels? temp = await ApiService().getAccidents();
+    Future.delayed(const Duration(seconds: 5)).then((value) => setState(() {}));
+    _accModel = temp?.result;
   }
 
   Stream<Position> getCurrentLocation() {
@@ -162,7 +171,7 @@ class _MapScreenState extends State<MapScreen> {
                                   mapController: mapController,
                                   options: MapOptions(
                                       center: currentPoint,
-                                      zoom: 16.0,
+                                      zoom: 17.0,
                                       minZoom: 11.0,
                                       maxZoom: 17.0,
                                       interactiveFlags:
@@ -242,12 +251,7 @@ class _MapScreenState extends State<MapScreen> {
                                               onPressed: () async {
                                                 currentLocation =
                                                     await _getGeoLocationPosition();
-                                                setState(() {
-                                                  currentPoint = LatLng(
-                                                      currentLocation.latitude,
-                                                      currentLocation
-                                                          .longitude);
-                                                });
+                                                _getDataFromApi();
                                                 print("REFRESH APP");
                                               },
                                               iconSize: 40,

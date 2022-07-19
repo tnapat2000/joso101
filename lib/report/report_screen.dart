@@ -8,13 +8,11 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:latlong/latlong.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 // import 'package:vector_math/vector_math.dart';
 import 'package:joso101/utils/colors.dart';
 
-import '../map/MapData.dart';
 
 class ReportScreen extends StatefulWidget {
   const ReportScreen({Key? key}) : super(key: key);
@@ -73,7 +71,7 @@ class _ReportScreenState extends State<ReportScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Provider.of<MapData>(context).statusColor,
+        backgroundColor: Colors.greenAccent,
         title: Text("REPORT"),
       ),
       body: SlidingUpPanel(
