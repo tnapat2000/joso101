@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:joso101/map/accident_class.dart';
-import 'package:joso101/map/accident_detail.dart';
 import 'package:joso101/report/report_screen.dart';
 import 'package:joso101/utils/basecard.dart';
+import 'package:joso101/utils/popicon.dart';
 import 'package:latlong/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +14,14 @@ import 'package:provider/provider.dart';
 import 'MapData.dart';
 
 class MapScreen extends StatefulWidget {
-  const MapScreen({Key? key}) : super(key: key);
+  const MapScreen(
+      {
+      // required this.currentUsername, required this.currentPassword
+      Key? key})
+      : super(key: key);
+
+  // final currentUsername;
+  // final currentPassword;
 
   @override
   State<MapScreen> createState() => _MapScreenState();
@@ -24,11 +31,11 @@ class _MapScreenState extends State<MapScreen> {
   late FirebaseAuth _auth;
   late FirebaseFirestore _fstore;
   late String currentUser;
+  late String currentPassword;
   late Position currentLocation;
   LatLng currentPoint = LatLng(37.421871, -122.084122);
   late final MapController mapController;
   late List<Marker> accidents;
-  // Color statusColor = Colors.greenAccent;
   bool activeStatus = false;
   double defaultPrecision = 0.0001;
 
@@ -36,19 +43,25 @@ class _MapScreenState extends State<MapScreen> {
   void initState() {
     super.initState();
     mapController = MapController();
-    // currentUser = "tester1@gmail.com";
+    currentUser = "tester1@gmail.com";
+    // currentUser = widget.currentUsername;
+    currentPassword = "peepoo";
+    // currentPassword = widget.currentPassword;
+    print("map screen: $currentUser ,$currentPassword");
     initFirebase();
   }
 
   void initFirebase() async {
+    // await Firebase.initializeApp();
     _auth = FirebaseAuth.instance;
     _fstore = FirebaseFirestore.instance;
     //  for testing
-    // await _auth.signInWithEmailAndPassword(
-    //     email: "tester1@gmail.com", password: "peepoo");
+    // print("sign in with: $currentUser ,$currentPassword");
+    await _auth.signInWithEmailAndPassword(
+        email: "tester1@gmail.com", password: "peepoo");
 
     currentUser = _auth.currentUser?.email ?? "none";
-    // print(currentUser);
+    print(currentUser);
   }
 
   Stream<Position> getCurrentLocation() {
@@ -106,11 +119,16 @@ class _MapScreenState extends State<MapScreen> {
         actions: [
           IconButton(
               onPressed: () async {
-                currentLocation = await _getGeoLocationPosition();
+                // currentLocation = await _getGeoLocationPosition();
                 setState(() {
                   print("REPORT");
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ReportScreen()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ChangeNotifierProvider(
+                                create: (context) => MapData(),
+                                child: ReportScreen(),
+                              )));
                 });
               },
               iconSize: 35,
@@ -144,7 +162,7 @@ class _MapScreenState extends State<MapScreen> {
                                   mapController: mapController,
                                   options: MapOptions(
                                       center: currentPoint,
-                                      zoom: 18.0,
+                                      zoom: 16.0,
                                       minZoom: 11.0,
                                       maxZoom: 17.0,
                                       interactiveFlags:
@@ -168,45 +186,30 @@ class _MapScreenState extends State<MapScreen> {
                                                         snap[index]['lat'],
                                                         snap[index]['lng']),
                                                     builder: (context) {
-                                                      // if (isInDangerZone(LatLng(snap[index]['lat'], snap[index]['lng']), defaultPrecision)){
-                                                      //   print("DANGER");
-                                                      // }
-                                                      return
-                                                        IconButton(
-                                                          onPressed: () {
-                                                            Accident acc = Accident(
-                                                                email: snap[index]
-                                                                    ["email"],
-                                                                accDate: snap[index][
-                                                                    "acc_date_time"],
-                                                                lat: snap[index]
-                                                                    ["lat"],
-                                                                lng: snap[index]
-                                                                    ["lng"],
-                                                                expwStep: snap[
-                                                                        index][
-                                                                    "expw_step"],
-                                                                injured: snap[
-                                                                        index]
-                                                                    ["injured"],
-                                                                death: snap[index]
-                                                                    ["death"],
-                                                                cause: snap[index]
-                                                                    ["cause"]);
-                                                            Navigator.push(
-                                                                context,
-                                                                MaterialPageRoute(
-                                                                    builder: (context) =>
-                                                                        AccidentDetailScreen(
-                                                                            accident:
-                                                                                acc)));
-                                                          },
-                                                          icon: Icon(
-                                                            Icons.location_on,
-                                                            color: Colors.red,
-                                                            size: 50,
-                                                          )
-                                                        );
+                                                      Accident acc = Accident(
+                                                          email: snap[index]
+                                                              ["email"],
+                                                          accDate: snap[index]
+                                                              ["acc_date_time"],
+                                                          lat: snap[index]
+                                                              ["lat"],
+                                                          lng: snap[index]
+                                                              ["lng"],
+                                                          expwStep: snap[index]
+                                                              ["expw_step"],
+                                                          injured: snap[index]
+                                                              ["injured"],
+                                                          death: snap[index]
+                                                              ["death"],
+                                                          cause: snap[index]
+                                                              ["cause"]);
+                                                      // print(acc.email);
+                                                      return PopUpIcon(
+                                                        accident: acc,
+                                                        herotag: acc.email +
+                                                            acc.accDate
+                                                                .toString(),
+                                                      );
                                                     })) +
                                             [
                                               Marker(
@@ -311,68 +314,9 @@ class _MapScreenState extends State<MapScreen> {
                           );
                         });
                   } else {
-                    return StreamBuilder<Position>(
-                        stream: getCurrentLocation(),
-                        builder: (context, snapshot) {
-                          if (!snapshot.hasData) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                          currentPoint = LatLng(snapshot.data?.latitude,
-                              snapshot.data?.longitude);
-                          // Provider.of<LocData>(context, listen: false).changePos(point);
-                          return Column(
-                            children: [
-                              Center(
-                                child: Column(
-                                  children: const [
-                                    Text(
-                                      "DB NOT AVAILABLE",
-                                      style: TextStyle(
-                                          color: Colors.red, fontSize: 25),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Expanded(
-                                child: FlutterMap(
-                                  mapController: mapController,
-                                  options: MapOptions(
-                                      center: currentPoint,
-                                      zoom: 18.0,
-                                      minZoom: 11.0,
-                                      maxZoom: 17.0,
-                                      interactiveFlags:
-                                          InteractiveFlag.pinchZoom |
-                                              InteractiveFlag.drag,
-                                      plugins: [
-                                        MarkerClusterPlugin(),
-                                      ]),
-                                  layers: [
-                                    TileLayerOptions(
-                                        urlTemplate:
-                                            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                                        subdomains: ['a', 'b', 'c']),
-                                    MarkerLayerOptions(markers: [
-                                      Marker(
-                                          width: 100.0,
-                                          height: 100.0,
-                                          point: currentPoint,
-                                          builder: (context) => const Icon(
-                                                Icons.location_on,
-                                                color: Colors.redAccent,
-                                                size: 50,
-                                              ))
-                                    ]),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          );
-                        });
+                    return const Center(child: CircularProgressIndicator());
                   }
-                }),
+                })
           ],
         ),
       ),
