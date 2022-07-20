@@ -85,18 +85,45 @@ class _MapScreenState extends State<MapScreen> {
             {
               expressLatLng = [
                 LatLng(13.89706, 100.542052),
-                LatLng(13.882336, 100.537974)
+                LatLng(13.882336, 100.537974),
+                LatLng(13.81717, 100.55003),
+                LatLng(13.85794, 100.53330),
+                LatLng(13.79393, 100.43461)
               ];
             }
             break;
           case "บางพลี-สุขสวัสดิ์":
-            {}
+            {
+              expressLatLng = [
+                LatLng(13.64252, 100.68150),
+                LatLng(13.65378, 100.68928),
+                LatLng(13.65514, 100.69034),
+                LatLng(13.64098, 100.68019),
+                LatLng(13.64766, 100.68496)
+              ];
+            }
             break;
           case "ฉลองรัช":
-            {}
+            {
+              expressLatLng = [
+                LatLng(13.71758, 100.60206),
+                LatLng(13.75214, 100.60049),
+                LatLng(13.80805, 100.61842),
+                LatLng(13.89745, 100.68518),
+                LatLng(13.88464, 100.64974)
+              ];
+            }
             break;
           case "บูรพาวิถี":
-            {}
+            {
+              expressLatLng = [
+                LatLng(13.45962, 100.99637),
+                LatLng(13.49504, 101.00604),
+                LatLng(13.51767, 100.97721),
+                LatLng(13.56335, 100.95085),
+                LatLng(13.67158, 100.61486)
+              ];
+            }
             break;
           case "S1":
             {}
