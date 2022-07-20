@@ -7,7 +7,7 @@ class PageOne extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: background_green,
+      color: app_darkblue,
         child: Center(
             child: Container(
               width: 300,
@@ -17,7 +17,7 @@ class PageOne extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
                 ),
-                color: light_green,
+                color: app_lightblue,
                 elevation: 10,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),

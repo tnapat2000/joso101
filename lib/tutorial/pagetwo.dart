@@ -7,7 +7,7 @@ class PageTwo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: background_green,
+      color: app_darkblue,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[

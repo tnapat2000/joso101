@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:joso101/map/accident_class.dart';
+import 'package:joso101/utils/colors.dart';
 import 'package:joso101/utils/hero_dialog_route.dart';
 
 class PopUpIcon extends StatelessWidget {
@@ -29,7 +30,7 @@ class PopUpIcon extends StatelessWidget {
           child: const Icon(
             Icons.location_on,
             size: 56,
-            color: Colors.red,
+            color: app_red,
           ),
         ),
       ),

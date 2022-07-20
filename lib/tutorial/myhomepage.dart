@@ -3,6 +3,7 @@ import 'package:joso101/authen/login_screen.dart';
 import 'package:joso101/tutorial/pageone.dart';
 import 'package:joso101/tutorial/pagethree.dart';
 import 'package:joso101/tutorial/pagetwo.dart';
+import 'package:joso101/utils/colors.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 
@@ -42,7 +43,11 @@ class _MyHomePageState extends State<MyHomePage> {
                         // }
                       },
                       child: Text('Proceed to Login',
-                          style: TextStyle(fontSize: 24))),
+                          style: TextStyle(
+                              fontSize: 24,
+                              color: app_green
+                          ),
+                      )),
             )
           : Container(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -52,7 +57,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   TextButton(
                       onPressed: () => pageController.jumpToPage(2),
-                      child: Text('SKIP')),
+                      child: Text(
+                        'SKIP',
+                        style: TextStyle(color: app_red),
+                      )),
                   Center(
                     child: SmoothPageIndicator(
                       controller: pageController,
@@ -61,8 +69,8 @@ class _MyHomePageState extends State<MyHomePage> {
                           dotHeight: 30,
                           dotWidth: 30,
                           spacing: 20,
-                          dotColor: Colors.grey,
-                          activeDotColor: Colors.blue),
+                          dotColor: app_yellow,
+                          activeDotColor: app_darkblue),
                       onDotClicked: (index) => pageController.animateToPage(
                           index,
                           duration: Duration(milliseconds: 500),
@@ -73,7 +81,10 @@ class _MyHomePageState extends State<MyHomePage> {
                       onPressed: () => pageController.nextPage(
                           duration: const Duration(milliseconds: 500),
                           curve: Curves.easeInOut),
-                      child: Text('NEXT'))
+                      child: Text(
+                        'NEXT',
+                        style: TextStyle(color: app_green),
+                      ))
                 ],
               ),
             ), // This trailing comma makes auto-formatting nicer for build methods.

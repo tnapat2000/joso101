@@ -88,10 +88,32 @@ class _ReportScreenState extends State<ReportScreen> {
 
               Container(
                 child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const <Widget>[
+                      Icon(
+                        Icons.arrow_upward_rounded
+                      ),
+                      Icon(
+                          Icons.arrow_downward_rounded
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              Container(),
+              Container(
+                child: Center(
                   child: Column(
                     children: [
-                      Text("Causes:"),
+                      Text(
+                        "Causes:",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold
+                        ),
+                      ),
                       DropdownButton(
+                        dropdownColor: app_reportyellow,
                         // Initial Value
                         value: dropdownvalue,
 
@@ -101,6 +123,7 @@ class _ReportScreenState extends State<ReportScreen> {
                         // Array list of items
                         items: items.map((String items) {
                           return DropdownMenuItem(
+
                             value: items,
                             child: Text(items),
                           );
@@ -121,7 +144,12 @@ class _ReportScreenState extends State<ReportScreen> {
               Center(
                 child: Column(
                   children: [
-                    Text("Death:"),
+                    Text(
+                      "Death:",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold
+                      ),
+                    ),
                     Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: 8, vertical: 16),
@@ -132,6 +160,8 @@ class _ReportScreenState extends State<ReportScreen> {
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           hintText: 'Enter the number of deaths',
+                          filled: true,
+                          fillColor: app_reportyellow
                         ),
                         keyboardType: TextInputType.number,
                       ),
@@ -142,7 +172,12 @@ class _ReportScreenState extends State<ReportScreen> {
               Center(
                 child: Column(
                   children: [
-                    Text("Injured:"),
+                    Text(
+                      "Injured:",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold
+                      ),
+                    ),
                     Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: 8, vertical: 16),
@@ -153,6 +188,8 @@ class _ReportScreenState extends State<ReportScreen> {
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           hintText: 'Enter the number of injured',
+                          filled: true,
+                          fillColor: app_reportyellow
                         ),
                         keyboardType: TextInputType.number,
                       ),
@@ -165,7 +202,7 @@ class _ReportScreenState extends State<ReportScreen> {
                   children: [
                     OutlinedButton(
                       style: OutlinedButton.styleFrom(
-                        backgroundColor: light_green,
+                        backgroundColor: app_darkblue,
                         primary: Colors.black54,
                         // side: BorderSide(color: Colors.red, width: 5), //<-- SEE HERE
                       ),
@@ -192,7 +229,7 @@ class _ReportScreenState extends State<ReportScreen> {
             ],
           ),
         ),
-        color: background_green,
+        color: app_lightblue,
         body: SafeArea(
           child: Stack(
             children: [
@@ -251,7 +288,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                                             onPressed: () {},
                                                             icon: const Icon(
                                                               Icons.location_on,
-                                                              color: Colors.red,
+                                                              color: app_red,
                                                               size: 50,
                                                             ));
                                                       })) +
@@ -262,7 +299,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                                     point: currentPoint,
                                                     builder: (context) =>
                                                         IconButton(
-                                                            color: Colors.red,
+                                                            color: app_red,
                                                             onPressed: () {},
                                                             icon: Image.asset(
                                                                 "assets/images/pin_accident.png")))

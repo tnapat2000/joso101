@@ -16,6 +16,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'map_data.dart';
 
+import 'package:joso101/utils/colors.dart';
+
 class MapScreen extends StatefulWidget {
   const MapScreen({Key? key}) : super(key: key);
 
@@ -316,7 +318,7 @@ class _MapScreenState extends State<MapScreen> {
                                                   height: 100.0,
                                                   point: currentPoint,
                                                   builder: (context) => IconButton(
-                                                      color: Colors.red,
+                                                      color: app_red,
                                                       onPressed: () {},
                                                       icon: Image.asset(
                                                           "assets/images/current_location.png")))
@@ -326,7 +328,7 @@ class _MapScreenState extends State<MapScreen> {
                               ),
                               Center(
                                   child: Container(
-                                color: Colors.purple,
+                                color: app_purple,
                                 child: Row(
                                   children: [
                                     Expanded(

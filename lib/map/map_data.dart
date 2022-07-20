@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:joso101/utils/colors.dart';
 
 class MapData with ChangeNotifier {
   bool _isInDanger = false;
-  Color _statusColor = Colors.greenAccent;
-  Color dangerColor = Colors.yellowAccent;
-  Color safeColor = Colors.greenAccent;
+  Color _statusColor = app_green;
+  Color dangerColor = app_yellow;
+  Color safeColor = app_green;
 
   void inDanger() {
     _isInDanger = true;

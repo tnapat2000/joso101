@@ -39,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: background_green,
+      backgroundColor: app_darkblue,
       body: SafeArea(
         child: Column(
           children: [
@@ -77,11 +77,11 @@ class _LoginScreenState extends State<LoginScreen> {
               padding: EdgeInsets.all(8.0),
               child: Text(
                 errorMsg,
-                style: TextStyle(fontSize: 20, color: Colors.red),
+                style: TextStyle(fontSize: 20, color: app_red),
               ),
             ),
             BaseCard(
-              color: light_green,
+              color: app_lightblue,
               child: const Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Text(
@@ -128,7 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
               },
             ),
             BaseCard(
-              color: light_green,
+              color: app_lightblue,
               child: const Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Text(

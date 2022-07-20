@@ -38,7 +38,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: background_green,
+      backgroundColor: app_darkblue,
       body: SafeArea(
         child: Column(
           children: [
@@ -76,11 +76,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
               padding: EdgeInsets.all(2.0),
               child: Text(
                 errorMsg,
-                style: const TextStyle(fontSize: 20, color: Colors.red),
+                style: const TextStyle(fontSize: 20, color: app_red),
               ),
             ),
             BaseCard(
-              color: light_green,
+              color: app_lightblue,
               child: const Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Text(
