@@ -18,31 +18,25 @@ Future<void> main() async {
 
   // prefs.clear();
   final bool shallShowHome = prefs.getBool('showHome') ?? false;
-  final bool isLoggedIn = prefs.getBool('loggedIn') ?? false;
 
-  final String latestUser = prefs.getString('currentUserEmail') ?? "no one";
-  final String latestPass = prefs.getString('currentUserPassword') ?? "";
+  final String latestUser = prefs.getString('latestUser') ?? "no one";
+  final String latestPass = prefs.getString('latestUserPass') ?? "";
 
-  print("$latestUser ,$latestPass");
+  print("main: $latestUser ,$latestPass");
 
   runApp(MyApp(
     showMap: shallShowHome,
-    latestUser: latestUser,
-    latestPass: latestPass,
   ));
 }
 
 class MyApp extends StatelessWidget {
-  MyApp(
-      {Key? key,
-      required this.showMap,
-      required this.latestUser,
-      required this.latestPass})
-      : super(key: key);
+  MyApp({
+    Key? key,
+    required this.showMap,
+  }) : super(key: key);
 
   final bool showMap;
-  final String latestUser;
-  final String latestPass;
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -56,10 +50,7 @@ class MyApp extends StatelessWidget {
           showMap
               ? ChangeNotifierProvider(
                   create: (context) => MapData(),
-                  child: MapScreen(
-                    // currentUsername: latestUser,
-                    // currentPassword: latestPass,
-                  ),
+                  child: MapScreen(),
                 )
               : const MyHomePage(),
       //     ChangeNotifierProvider(

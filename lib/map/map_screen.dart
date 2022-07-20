@@ -1,5 +1,3 @@
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -14,15 +12,12 @@ import 'package:joso101/utils/popicon.dart';
 import 'package:latlong/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'map_data.dart';
 
 class MapScreen extends StatefulWidget {
-  const MapScreen(
-      {
-      // required this.currentUsername, required this.currentPassword
-      Key? key})
-      : super(key: key);
+  const MapScreen({Key? key}) : super(key: key);
 
   // final currentUsername;
   // final currentPassword;
@@ -34,8 +29,8 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   late FirebaseAuth _auth;
   late FirebaseFirestore _fstore;
-  late String currentUser;
-  late String currentPassword;
+  late String currentUser = "";
+  late String currentPassword = "";
   late Position currentLocation;
   LatLng currentPoint = LatLng(37.421871, -122.084122);
   late final MapController mapController;
@@ -44,16 +39,12 @@ class _MapScreenState extends State<MapScreen> {
   double defaultPrecision = 0.0001;
   late List<AccidentMod>? _accList = [];
   late List<Accident> accList = [];
+  late final SharedPreferences prefs;
 
   @override
   void initState() {
     super.initState();
     mapController = MapController();
-    currentUser = "tester1@gmail.com";
-    // currentUser = widget.currentUsername;
-    currentPassword = "peepoo";
-    // currentPassword = widget.currentPassword;
-    print("map screen: $currentUser ,$currentPassword");
     initFirebase();
   }
 
@@ -61,10 +52,12 @@ class _MapScreenState extends State<MapScreen> {
     // await Firebase.initializeApp();
     _auth = FirebaseAuth.instance;
     _fstore = FirebaseFirestore.instance;
-    //  for testing
-    // print("sign in with: $currentUser ,$currentPassword");
+    prefs = await SharedPreferences.getInstance();
+    currentUser = prefs.getString("latestUser") ?? "none";
+    currentPassword = prefs.getString("latestUserPass") ?? "none";
+
     await _auth.signInWithEmailAndPassword(
-        email: "tester1@gmail.com", password: "peepoo");
+        email: currentUser, password: currentPassword);
 
     currentUser = _auth.currentUser?.email ?? "none";
     print(currentUser);
@@ -365,7 +358,10 @@ class _MapScreenState extends State<MapScreen> {
                                             child: IconButton(
                                               icon: Icon(Icons
                                                   .power_settings_new_rounded),
-                                              onPressed: () {},
+                                              onPressed: () {
+                                                print("PREF CLEAR");
+                                                prefs.clear();
+                                              },
                                               iconSize: 40,
                                             ),
                                           )),

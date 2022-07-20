@@ -35,26 +35,6 @@ class _LoginScreenState extends State<LoginScreen> {
     prefs = await SharedPreferences.getInstance();
   }
 
-  void persistUser() async {
-    prefs.setString("currentUserEmail", email);
-    prefs.setString("currentUserPassword", password);
-  }
-
-  String getUserEmail() {
-    return prefs.getString("currentUserEmail") ?? "no one";
-  }
-
-  String getUserPass() {
-    return prefs.getString("currentUserPassword") ?? "no one";
-  }
-
-  void setLoggedIn(bool value) {
-    prefs.setBool("loggedIn", value);
-  }
-
-  bool getLoginStatus() {
-    return prefs.getBool("loggedIn") ?? false;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -126,19 +106,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       email: email, password: password);
                   String user = _auth.currentUser?.email ?? "NO ONE";
                   if (user != "NO ONE") {
-                    persistUser();
-                    setLoggedIn(true);
-                    final prefs = await SharedPreferences.getInstance();
                     prefs.setBool('showHome', true);
+                    prefs.setString("latestUser", user);
+                    prefs.setString("latestUserPass", password);
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => ChangeNotifierProvider(
                                   create: (context) => MapData(),
-                                  child: MapScreen(
-                                    // currentUsername: user,
-                                    // currentPassword: password,
-                                  ),
+                                  child: MapScreen(),
                                 )));
                   } else {
                     setState(() {

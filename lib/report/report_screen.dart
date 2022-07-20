@@ -8,8 +8,10 @@ import 'package:flutter/rendering.dart';
 
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
+import 'package:joso101/map/map_data.dart';
 import 'package:latlong/latlong.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 // import 'package:vector_math/vector_math.dart';
@@ -75,7 +77,7 @@ class _ReportScreenState extends State<ReportScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.greenAccent,
+        backgroundColor: Provider.of<MapData>(context).statusColor,
         title: Text("REPORT"),
       ),
       body: SlidingUpPanel(
@@ -83,28 +85,7 @@ class _ReportScreenState extends State<ReportScreen> {
           // child: Text("This is the sliding Widget"),
           child: Column(
             children: [
-              // Container(
-              //   child: Center(
-              //     child: Column(
-              //       children: [
-              //         Text("Location:"),
-              //         Padding(
-              //           padding:
-              //               EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-              //           child: TextField(
-              //             onChanged: (value){
-              //               locationText = value;
-              //             },
-              //             decoration: InputDecoration(
-              //               border: OutlineInputBorder(),
-              //               hintText: 'Enter a location here',
-              //             ),
-              //           ),
-              //         ),
-              //       ],
-              //     ),
-              //   ),
-              // ),
+
               Container(
                 child: Center(
                   child: Column(
