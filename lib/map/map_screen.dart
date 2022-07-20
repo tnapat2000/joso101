@@ -322,7 +322,29 @@ class _MapScreenState extends State<MapScreen> {
                                                       onPressed: () {},
                                                       icon: Image.asset(
                                                           "assets/images/current_location.png")))
-                                            ]),
+                                            ] +
+                                            List.generate(accList.length,
+                                                (index) {
+                                              return Marker(
+                                                  width: 50,
+                                                  height: 50,
+                                                  point: LatLng(
+                                                      accList[index].lat,
+                                                      accList[index].lng),
+                                                  builder: (context) {
+                                                    setDangerStatus(LatLng(
+                                                        accList[index].lat,
+                                                        accList[index].lng));
+                                                    return PopUpIcon(
+                                                      accident: accList[index],
+                                                      herotag:
+                                                          (accList[index].lng +
+                                                                  accList[index]
+                                                                      .lng)
+                                                              .toString(),
+                                                    );
+                                                  });
+                                            })),
                                   ],
                                 ),
                               ),
@@ -350,25 +372,6 @@ class _MapScreenState extends State<MapScreen> {
                                             ),
                                           )),
                                     ),
-                                    Expanded(child: SizedBox()),
-                                    Expanded(
-                                      child: BaseCard(
-                                          color: Provider.of<MapData>(context)
-                                              .statusColor,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(2.0),
-                                            child: IconButton(
-                                              icon: Icon(Icons
-                                                  .power_settings_new_rounded),
-                                              onPressed: () {
-                                                print("PREF CLEAR");
-                                                prefs.clear();
-                                              },
-                                              iconSize: 40,
-                                            ),
-                                          )),
-                                    ),
-                                    Expanded(child: SizedBox()),
                                     Expanded(
                                       child: BaseCard(
                                           color: Provider.of<MapData>(context)

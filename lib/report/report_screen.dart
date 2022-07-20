@@ -85,7 +85,6 @@ class _ReportScreenState extends State<ReportScreen> {
           // child: Text("This is the sliding Widget"),
           child: Column(
             children: [
-
               Container(
                 child: Center(
                   child: Row(
