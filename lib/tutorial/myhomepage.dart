@@ -3,11 +3,8 @@ import 'package:joso101/authen/login_screen.dart';
 import 'package:joso101/tutorial/pageone.dart';
 import 'package:joso101/tutorial/pagethree.dart';
 import 'package:joso101/tutorial/pagetwo.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-import '../map/MapData.dart';
-import '../map/map_screen.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);

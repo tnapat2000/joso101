@@ -1,7 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:joso101/tutorial/myhomepage.dart';
 import 'package:joso101/utils/basecard.dart';
 import 'package:joso101/utils/colors.dart';
 import 'package:joso101/map/map_screen.dart';
@@ -9,7 +7,7 @@ import 'package:joso101/authen/register_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../map/MapData.dart';
+import '../map/map_data.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);

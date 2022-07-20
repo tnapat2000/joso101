@@ -1,4 +1,4 @@
-import 'dart:math';
+
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,7 +15,7 @@ import 'package:latlong/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 
-import 'MapData.dart';
+import 'map_data.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen(
@@ -43,7 +43,7 @@ class _MapScreenState extends State<MapScreen> {
   bool activeStatus = false;
   double defaultPrecision = 0.0001;
   late List<AccidentMod>? _accList = [];
-  late List<Accident> accList;
+  late List<Accident> accList = [];
 
   @override
   void initState() {
@@ -79,7 +79,7 @@ class _MapScreenState extends State<MapScreen> {
       String express = _accList![index].expwStep;
       DateTime accidentDateTime = _accList![index].accidentDate;
       if (DateTime.now().day - 3 > accidentDateTime.day) {
-        late List<LatLng> expressLatLng;
+        List<LatLng> expressLatLng = [];
         switch (express) {
           case "ศรีรัช":
             {
@@ -141,21 +141,21 @@ class _MapScreenState extends State<MapScreen> {
             {}
             break;
         }
+        expressLatLng.isEmpty
+            ? accList += []
+            : accList += List.generate(
+                expressLatLng.length,
+                (lIndex) => Accident(
+                    accDate: Timestamp.fromDate(_accList![index].accidentDate),
+                    lat: expressLatLng[lIndex].latitude,
+                    lng: expressLatLng[lIndex].longitude,
+                    injured:
+                        _accList![index].injurMan + _accList![index].injurFemel,
+                    death:
+                        _accList![index].deadMan + _accList![index].deadFemel,
+                    cause: _accList![index].cause));
       }
     }
-
-    // accList = List.generate(_accList!.length, (index) {
-    //   late LatLng tempLoc;
-    //   String express = _accList![index].expwStep;
-    //
-    //   return Accident(
-    //       accDate: accDate,
-    //       lat: lat,
-    //       lng: _accList![index],
-    //       injured: _accList![index].injurFemel + _accList![index].injurMan,
-    //       death: _accList![index].deadFemel + _accList![index].deadMan,
-    //       cause: _accList![index].cause);
-    // });
   }
 
   Stream<Position> getCurrentLocation() {
@@ -205,6 +205,18 @@ class _MapScreenState extends State<MapScreen> {
         (currentPoint.longitude >= dangerLngLower);
   }
 
+  void setDangerStatus(LatLng latLng) {
+    if (isInDangerZone(latLng, defaultPrecision)) {
+      Future.delayed(Duration.zero, () {
+        Provider.of<MapData>(context, listen: false).inDanger();
+      });
+    } else {
+      Future.delayed(Duration.zero, () {
+        Provider.of<MapData>(context, listen: false).inSafe();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -213,7 +225,6 @@ class _MapScreenState extends State<MapScreen> {
         actions: [
           IconButton(
               onPressed: () async {
-                // currentLocation = await _getGeoLocationPosition();
                 setState(() {
                   print("REPORT");
                   Navigator.push(
@@ -280,9 +291,12 @@ class _MapScreenState extends State<MapScreen> {
                                                         snap[index]['lat'],
                                                         snap[index]['lng']),
                                                     builder: (context) {
+                                                      setDangerStatus(LatLng(
+                                                          snap[index]['lat'],
+                                                          snap[index]['lng']));
                                                       Accident acc = Accident(
                                                           email: snap[index]
-                                                                  ["email"],
+                                                              ["email"],
                                                           accDate: snap[index]
                                                               ["acc_date_time"],
                                                           lat: snap[index]
@@ -351,26 +365,7 @@ class _MapScreenState extends State<MapScreen> {
                                             child: IconButton(
                                               icon: Icon(Icons
                                                   .power_settings_new_rounded),
-                                              onPressed: () {
-                                                if (activeStatus) {
-                                                  Provider.of<MapData>(context,
-                                                          listen: false)
-                                                      .setInactive();
-                                                  print("ACTIVE");
-                                                } else {
-                                                  Provider.of<MapData>(context,
-                                                          listen: false)
-                                                      .setActive();
-                                                  print("INACTIVE");
-                                                }
-                                                setState(() {
-                                                  activeStatus =
-                                                      Provider.of<MapData>(
-                                                              context,
-                                                              listen: false)
-                                                          .activeStatus;
-                                                });
-                                              },
+                                              onPressed: () {},
                                               iconSize: 40,
                                             ),
                                           )),

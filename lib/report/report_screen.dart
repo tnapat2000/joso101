@@ -1,6 +1,5 @@
 import 'dart:core';
 
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +14,6 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 // import 'package:vector_math/vector_math.dart';
 import 'package:joso101/utils/colors.dart';
-
 
 class ReportScreen extends StatefulWidget {
   const ReportScreen({Key? key}) : super(key: key);
@@ -37,8 +35,6 @@ class _ReportScreenState extends State<ReportScreen> {
   String? causeText;
   int? deathText;
   int? injuredText;
-
-
 
   @override
   void initState() {
@@ -149,13 +145,14 @@ class _ReportScreenState extends State<ReportScreen> {
                       padding:
                           EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                       child: TextField(
-                        onChanged: (value){
+                        onChanged: (value) {
                           deathText = int.parse(value);
                         },
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           hintText: 'Enter the number of deaths',
                         ),
+                        keyboardType: TextInputType.number,
                       ),
                     ),
                   ],
@@ -167,15 +164,16 @@ class _ReportScreenState extends State<ReportScreen> {
                     Text("Injured:"),
                     Padding(
                       padding:
-                      EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                          EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                       child: TextField(
-                        onChanged: (value){
+                        onChanged: (value) {
                           injuredText = int.parse(value);
                         },
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           hintText: 'Enter the number of injured',
                         ),
+                        keyboardType: TextInputType.number,
                       ),
                     ),
                   ],

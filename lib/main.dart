@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:joso101/map/MapData.dart';
+import 'package:joso101/map/map_data.dart';
 import 'package:joso101/tutorial/myhomepage.dart';
 import 'package:provider/provider.dart';
 
