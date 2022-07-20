@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +42,8 @@ class _MapScreenState extends State<MapScreen> {
   late List<Marker> accidents;
   bool activeStatus = false;
   double defaultPrecision = 0.0001;
-  late List<AccidentMod>? _accModel = [];
+  late List<AccidentMod>? _accList = [];
+  late List<Accident> accList;
 
   @override
   void initState() {
@@ -70,7 +73,62 @@ class _MapScreenState extends State<MapScreen> {
   void _getDataFromApi() async {
     AccidentModels? temp = await ApiService().getAccidents();
     Future.delayed(const Duration(seconds: 5)).then((value) => setState(() {}));
-    _accModel = temp?.result;
+    _accList = temp?.result;
+
+    for (int index = 0; index < _accList!.length; index++) {
+      String express = _accList![index].expwStep;
+      DateTime accidentDateTime = _accList![index].accidentDate;
+      if (DateTime.now().day - 3 > accidentDateTime.day) {
+        late List<LatLng> expressLatLng;
+        switch (express) {
+          case "ศรีรัช":
+            {
+              expressLatLng = [
+                LatLng(13.89706, 100.542052),
+                LatLng(13.882336, 100.537974)
+              ];
+            }
+            break;
+          case "บางพลี-สุขสวัสดิ์":
+            {}
+            break;
+          case "ฉลองรัช":
+            {}
+            break;
+          case "บูรพาวิถี":
+            {}
+            break;
+          case "S1":
+            {}
+            break;
+          case "อุดรรัถยา":
+            {}
+            break;
+          case "เฉลิมมหานคร":
+            {}
+            break;
+          case "ทางหลวงพิเศษหมายเลข 37":
+            {}
+            break;
+          case "ศรีรัช-วงแหวนรอบนอก":
+            {}
+            break;
+        }
+      }
+    }
+
+    // accList = List.generate(_accList!.length, (index) {
+    //   late LatLng tempLoc;
+    //   String express = _accList![index].expwStep;
+    //
+    //   return Accident(
+    //       accDate: accDate,
+    //       lat: lat,
+    //       lng: _accList![index],
+    //       injured: _accList![index].injurFemel + _accList![index].injurMan,
+    //       death: _accList![index].deadFemel + _accList![index].deadMan,
+    //       cause: _accList![index].cause);
+    // });
   }
 
   Stream<Position> getCurrentLocation() {
@@ -197,15 +255,13 @@ class _MapScreenState extends State<MapScreen> {
                                                     builder: (context) {
                                                       Accident acc = Accident(
                                                           email: snap[index]
-                                                              ["email"],
+                                                                  ["email"],
                                                           accDate: snap[index]
                                                               ["acc_date_time"],
                                                           lat: snap[index]
                                                               ["lat"],
                                                           lng: snap[index]
                                                               ["lng"],
-                                                          expwStep: snap[index]
-                                                              ["expw_step"],
                                                           injured: snap[index]
                                                               ["injured"],
                                                           death: snap[index]
@@ -215,7 +271,7 @@ class _MapScreenState extends State<MapScreen> {
                                                       // print(acc.email);
                                                       return PopUpIcon(
                                                         accident: acc,
-                                                        herotag: acc.email +
+                                                        herotag: acc.email! +
                                                             acc.accDate
                                                                 .toString(),
                                                       );

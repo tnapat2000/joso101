@@ -63,7 +63,7 @@ class _PopUpIcon extends StatelessWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(acc.email),
+                      Text(acc.email!),
                       Text(acc.cause),
                       Text(acc.death.toString()),
                       Text(acc.injured.toString()),

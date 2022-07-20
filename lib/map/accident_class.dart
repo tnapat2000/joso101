@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+
+
 class Accident {
-  final String email;
+  String? email;
   final Timestamp accDate;
   final double lat;
   final double lng;
@@ -11,7 +13,7 @@ class Accident {
   final String cause;
 
   Accident({
-    required this.email,
+    this.email,
     required this.accDate,
     required this.lat,
     required this.lng,

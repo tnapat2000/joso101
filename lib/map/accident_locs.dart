@@ -60,7 +60,8 @@ class AccidentMod {
         accidentDate: DateTime.parse(json["accident_date"]),
         accidentTime: json["accident_time"],
         expwStep: json["expw_step"],
-        weatherState: weatherStateValues.map[json["weather_state"]] ?? WeatherState.EMPTY,
+        weatherState:
+            weatherStateValues.map[json["weather_state"]] ?? WeatherState.EMPTY,
         injurMan: json["injur_man"],
         injurFemel: json["injur_femel"],
         deadMan: json["dead_man"],
@@ -99,3 +100,28 @@ class EnumValues<T> {
     return reverseMap;
   }
 }
+
+enum Express {
+  SRI_RACH,
+  BANG_PLI_SUK_SAWAT,
+  CHALONG_RACH,
+  BURAPHA,
+  UDORN,
+  CHALEOM,
+  THE_37,
+  S1,
+  OUTSIDE_SRI_RACH
+}
+
+final ExpressStrVal = EnumValues({
+  "ศรีรัช": Express.SRI_RACH,
+  "บางพลี-สุขสวัสดิ์": Express.BANG_PLI_SUK_SAWAT,
+  "ฉลองรัช": Express.CHALONG_RACH,
+  "บูรพาวิถี": Express.BURAPHA,
+  "S1": Express.S1,
+  "อุดรรัถยา": Express.UDORN,
+  "เฉลิมมหานคร": Express.CHALEOM,
+  "ทางหลวงพิเศษหมายเลข 37": Express.THE_37,
+  "ศรีรัช-วงแหวนรอบนอก": Express.OUTSIDE_SRI_RACH
+});
+
